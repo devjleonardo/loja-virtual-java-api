@@ -18,6 +18,7 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter implements H
 	public void configure(WebSecurity web) throws Exception {
 		web
 		    .ignoring() /* Ignorando URL no momento para não autenticar */
+		    	.antMatchers(HttpMethod.GET, "/buscarAcessoPorId/**", "/buscarAcessoPorNome/**")
 		        .antMatchers(HttpMethod.POST, "/salvarAcesso")
 				.antMatchers(HttpMethod.DELETE, "/deletarAcessoPorId/**");
 	}
