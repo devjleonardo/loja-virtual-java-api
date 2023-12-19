@@ -2,9 +2,16 @@ package com.joseleonardo.lojavirtual.security;
 
 import java.util.Date;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+
+import com.joseleonardo.lojavirtual.ApplicationContextLoad;
+import com.joseleonardo.lojavirtual.model.Usuario;
+import com.joseleonardo.lojavirtual.repository.UsuarioRepository;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -41,6 +48,39 @@ public class JWTTokenAutenticacaoService {
 
 		/* Usado para para teste no Postman */
 		response.getWriter().write("{\"Authorization\": \"" + token + "\"}");
+	}
+	
+	/* Pega o login do usuário na validação do token, se o login for válido 
+	 * retorna o usuário por completo, caso não seja válido retorna null */
+	public Authentication getAuthentication(HttpServletRequest request, HttpServletResponse response) {
+		String token = request.getHeader(HEADER_STRING);
+
+		if (token != null) {
+			String tokenLimpo = token.replace(TOKEN_PREFIX, "");
+
+			/* Faz a validação do token e obtém o login do usuário contido 
+			 * no campo subject do token */
+			String loginRetornadoDoToken = Jwts.parser()
+			        .setSigningKey(SECRET)
+					.parseClaimsJws(tokenLimpo)
+					.getBody()
+					.getSubject(); /* ADMIN ou Alex */
+
+			if (loginRetornadoDoToken != null) {
+				Usuario usuario = ApplicationContextLoad.getApplicationContext()
+						.getBean(UsuarioRepository.class)
+						.buscarUsuarioPorLogin(loginRetornadoDoToken);
+
+				if (usuario != null) {
+					return new UsernamePasswordAuthenticationToken(
+							usuario.getLogin(), usuario.getSenha(), usuario.getAuthorities());
+				}
+			}
+		}
+
+		liberacaoDeCors(response);
+
+		return null;
 	}
 	
 	/* Fazendo liberação contra erro de CORS no navegador */
