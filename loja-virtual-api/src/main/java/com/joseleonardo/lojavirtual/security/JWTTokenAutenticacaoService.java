@@ -36,9 +36,30 @@ public class JWTTokenAutenticacaoService {
 
 		/* Dá a resposta pra tela e para o cliente, outra API, navegador, aplicativo, javascript, outra chamada java, etc... */
 		response.addHeader(HEADER_STRING, token);
+		
+		liberacaoDeCors(response);
 
 		/* Usado para para teste no Postman */
 		response.getWriter().write("{\"Authorization\": \"" + token + "\"}");
+	}
+	
+	/* Fazendo liberação contra erro de CORS no navegador */
+	private void liberacaoDeCors(HttpServletResponse response) {
+		if (response.getHeader("Access-Control-Allow-Origin") == null) {
+			response.addHeader("Access-Control-Allow-Origin", "*");
+		}
+
+		if (response.getHeader("Access-Control-Allow-Headers") == null) {
+			response.addHeader("Access-Control-Allow-Headers", "*");
+		}
+
+		if (response.getHeader("Access-Control-Request-Headers") == null) {
+			response.addHeader("Access-Control-Request-Headers", "*");
+		}
+
+		if (response.getHeader("Access-Control-Allow-Methods") == null) {
+			response.addHeader("Access-Control-Allow-Methods", "*");
+		}
 	}
 
 }
