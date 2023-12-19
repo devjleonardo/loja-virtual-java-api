@@ -8,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -24,13 +25,13 @@ public class ControleDeExcecoes extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(LojaVirtualException.class)
 	public ResponseEntity<Object> handleExceptionCustom(LojaVirtualException ex) {
 		ObjetoErroDTO objetoErroDTO = new ObjetoErroDTO();
-
+		
 		objetoErroDTO.setError(ex.getMessage());
 		objetoErroDTO.setCode(HttpStatus.OK.toString());
-
+		
 		return new ResponseEntity<Object>(objetoErroDTO, HttpStatus.OK);
 	}
-
+	
 	/* Captura exceções do projeto */
 	@ExceptionHandler({Exception.class, RuntimeException.class, Throwable.class})
 	@Override
@@ -39,27 +40,29 @@ public class ControleDeExcecoes extends ResponseEntityExceptionHandler {
 		ObjetoErroDTO objetoErroDTO = new ObjetoErroDTO();
 
 		String msg = "";
-
+		
 		if (ex instanceof MethodArgumentNotValidException) {
 			List<ObjectError> objectErrors = ((MethodArgumentNotValidException) ex)
 					.getBindingResult()
 					.getAllErrors();
-
+			
 			for (ObjectError objectError : objectErrors) {
 				msg += objectError.getDefaultMessage() + "\n";
 			}
+		} else if (ex instanceof HttpMessageNotReadableException) {
+			msg = "Não está sendo enviado dados para o corpo da requisição";
 		} else {
 			msg = ex.getMessage();
 		}
-
+		
 		objetoErroDTO.setError(msg);
 		objetoErroDTO.setCode(status.value() + " ==> " + status.getReasonPhrase());
-
+		
 		ex.printStackTrace();
 		
 		return new ResponseEntity<Object>(objetoErroDTO, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-
+	
 	/* Captura erro na parte do banco de dados */
 	@ExceptionHandler({DataIntegrityViolationException.class, ConstraintViolationException.class, 
 		    SQLException.class})
@@ -67,7 +70,7 @@ public class ControleDeExcecoes extends ResponseEntityExceptionHandler {
 		ObjetoErroDTO objetoErroDTO = new ObjetoErroDTO();
 
 		String msg = "";
-
+		
 		if (ex instanceof DataIntegrityViolationException) {
 			msg = "Erro de integridade no banco: " +  ((DataIntegrityViolationException) ex)
 					.getCause()
@@ -83,10 +86,10 @@ public class ControleDeExcecoes extends ResponseEntityExceptionHandler {
 		}else {
 			msg = ex.getMessage();
 		}
-
+		
 		objetoErroDTO.setError(msg);
 		objetoErroDTO.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
-
+		
 		ex.printStackTrace();
 		
 		return new ResponseEntity<Object>(objetoErroDTO, HttpStatus.INTERNAL_SERVER_ERROR);
