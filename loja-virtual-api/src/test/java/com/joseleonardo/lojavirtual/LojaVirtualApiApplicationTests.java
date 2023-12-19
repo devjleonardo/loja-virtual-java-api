@@ -18,6 +18,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joseleonardo.lojavirtual.controller.AcessoController;
+import com.joseleonardo.lojavirtual.exception.LojaVirtualException;
 import com.joseleonardo.lojavirtual.model.Acesso;
 import com.joseleonardo.lojavirtual.repository.AcessoRepository;
 
@@ -155,7 +156,7 @@ class LojaVirtualApiApplicationTests extends TestCase {
 	}
 
 	@Test
-	public void testCadastrarAcesso() {
+	public void testCadastrarAcesso() throws LojaVirtualException {
 		Acesso acesso = new Acesso();
 		acesso.setNome("ROLE_ADMIN");
 		

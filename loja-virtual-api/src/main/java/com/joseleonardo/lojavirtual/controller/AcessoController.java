@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.joseleonardo.lojavirtual.exception.LojaVirtualException;
 import com.joseleonardo.lojavirtual.model.Acesso;
 import com.joseleonardo.lojavirtual.repository.AcessoRepository;
 import com.joseleonardo.lojavirtual.service.AcessoService;
@@ -28,7 +29,18 @@ public class AcessoController {
 	
 	@ResponseBody /* Pode dar um retorno da API */
 	@PostMapping(value = "**/salvarAcesso") /* Mapeando a URL para receber JSON */
-	public ResponseEntity<Acesso> salvarAcesso(@RequestBody Acesso acesso) { /* Recebe o JSON e converte pra Objeto */
+	public ResponseEntity<Acesso> salvarAcesso(@RequestBody Acesso acesso) 
+			throws LojaVirtualException { 
+		if (acesso.getId() == null) {
+			List<Acesso> acessosExistente = acessoRepository
+					.buscarAcessoPorNome(acesso.getNome().trim().toUpperCase());
+		
+			if (!acessosExistente.isEmpty()) {
+				throw new LojaVirtualException("Não foi possível cadastrar, pois "
+						+ "já existe um acesso com o nome " + acesso.getNome());
+			}
+		}
+		
 		Acesso acessoSalvo = acessoService.salvar(acesso);
 		
 		return new ResponseEntity<Acesso>(acessoSalvo, HttpStatus.CREATED);
@@ -37,6 +49,11 @@ public class AcessoController {
 	@ResponseBody
 	@DeleteMapping(value = "**/deletarAcessoPorId/{id}")
 	public ResponseEntity<?> deletarAcessoPorId(@PathVariable("id") Long id) {
+		if (!acessoRepository.findById(id).isPresent()) {
+			return new ResponseEntity<>("O acesso de código "
+					+ id + " já foi removido ou não existe", HttpStatus.OK);
+		}
+		
 		acessoRepository.deleteById(id);
 		
 		return new ResponseEntity<>("Acesso removido", HttpStatus.OK);
@@ -44,8 +61,13 @@ public class AcessoController {
 	
 	@ResponseBody
 	@GetMapping(value = "**/buscarAcessoPorId/{id}")
-	public ResponseEntity<Acesso> buscarAcessoPorId(@PathVariable("id") Long id) {
-		Acesso acesso = acessoRepository.findById(id).get();
+	public ResponseEntity<Acesso> buscarAcessoPorId(@PathVariable("id") Long id) 
+			throws LojaVirtualException {
+		Acesso acesso = acessoRepository.findById(id).orElse(null);
+		
+		if (acesso == null) {
+			throw new LojaVirtualException("Não econtrou nenhum acesso com o código " + id);
+		}
 
 		return new ResponseEntity<Acesso>(acesso, HttpStatus.OK);
 	}

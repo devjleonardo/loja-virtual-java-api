@@ -19,6 +19,17 @@ import com.joseleonardo.lojavirtual.model.dto.ObjetoErroDTO;
 
 @ControllerAdvice
 public class ControleDeExcecoes extends ResponseEntityExceptionHandler {
+	
+	/* Captura todas LojaVirtualException lançadas */
+	@ExceptionHandler(LojaVirtualException.class)
+	public ResponseEntity<Object> handleExceptionCustom(LojaVirtualException ex) {
+		ObjetoErroDTO objetoErroDTO = new ObjetoErroDTO();
+
+		objetoErroDTO.setError(ex.getMessage());
+		objetoErroDTO.setCode(HttpStatus.OK.toString());
+
+		return new ResponseEntity<Object>(objetoErroDTO, HttpStatus.OK);
+	}
 
 	/* Captura exceções do projeto */
 	@ExceptionHandler({Exception.class, RuntimeException.class, Throwable.class})
