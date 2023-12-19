@@ -37,7 +37,7 @@ public class AcessoController {
 		
 			if (!acessosExistente.isEmpty()) {
 				throw new LojaVirtualException("Não foi possível cadastrar, pois "
-						+ "já existe um acesso com o nome " + acesso.getNome());
+						+ "já existe um acesso cadastrado com o nome " + acesso.getNome());
 			}
 		}
 		

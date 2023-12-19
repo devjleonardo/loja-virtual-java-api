@@ -25,6 +25,13 @@ public class PessoaJuridicaService {
 	private JdbcTemplate jdbcTemplate;
 	
 	public PessoaJuridica salvar(PessoaJuridica  pessoaJuridica) {
+		//pessoaJuridica = pessoaJuridicaRepository.save(pessoaJuridica);
+
+		for (int i = 0; i < pessoaJuridica.getEnderecos().size(); i++) {
+			pessoaJuridica.getEnderecos().get(i).setPessoa(pessoaJuridica);
+			pessoaJuridica.getEnderecos().get(i).setEmpresa(pessoaJuridica);
+		}
+		
 		pessoaJuridica = pessoaJuridicaRepository.save(pessoaJuridica);
 		
 		Usuario usuarioPessoaJuridica = usuarioRepository.buscarUsuarioPorPessoaIdOuLogin(
@@ -54,6 +61,8 @@ public class PessoaJuridicaService {
 			usuarioPessoaJuridica = usuarioRepository.save(usuarioPessoaJuridica);
 			
 			usuarioRepository.inserirAcessoDeUsuarioParaPessoaJuridica(usuarioPessoaJuridica.getId());
+			
+			/* Fazer o envio de e-mail do login e da senha */
 		}
 		
 		return pessoaJuridica;
