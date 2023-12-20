@@ -63,7 +63,8 @@ public class PessoaJuridicaService {
 			
 			usuarioPessoaJuridica = usuarioRepository.save(usuarioPessoaJuridica);
 			
-			usuarioRepository.inserirAcessoDeUsuarioParaPessoaJuridica(usuarioPessoaJuridica.getId());
+			usuarioRepository.inserirAcessoDeUsuario(usuarioPessoaJuridica.getId());
+			usuarioRepository.inserirQualquerAcesso(usuarioPessoaJuridica.getId(), "ROLE_ADMIN");
 			
 			/* Enviar e-mail com o login e senha do usuário */
 			StringBuilder mensagemHtml = new StringBuilder();
