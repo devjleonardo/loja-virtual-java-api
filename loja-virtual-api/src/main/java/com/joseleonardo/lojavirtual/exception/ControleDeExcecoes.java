@@ -1,9 +1,14 @@
 package com.joseleonardo.lojavirtual.exception;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.mail.MessagingException;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,9 +22,13 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.joseleonardo.lojavirtual.model.dto.ObjetoErroDTO;
+import com.joseleonardo.lojavirtual.service.EnvioEmailService;
 
 @ControllerAdvice
 public class ControleDeExcecoes extends ResponseEntityExceptionHandler {
+	
+	@Autowired
+	private EnvioEmailService envioEmailService;
 	
 	/* Captura todas LojaVirtualException lançadas */
 	@ExceptionHandler(LojaVirtualException.class)
@@ -60,6 +69,13 @@ public class ControleDeExcecoes extends ResponseEntityExceptionHandler {
 		
 		ex.printStackTrace();
 		
+		try {
+			envioEmailService.enviarEmailHtml("Erro na loja virtual", 
+			        ExceptionUtils.getStackTrace(ex), "leoprogamer57@gmail.com");
+		} catch (UnsupportedEncodingException | MessagingException e) {
+			e.printStackTrace();
+		}
+		
 		return new ResponseEntity<Object>(objetoErroDTO, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
@@ -75,15 +91,15 @@ public class ControleDeExcecoes extends ResponseEntityExceptionHandler {
 			msg = "Erro de integridade no banco: " +  ((DataIntegrityViolationException) ex)
 					.getCause()
 					.getCause().getMessage();
-		}else if (ex instanceof ConstraintViolationException) {
+		} else if (ex instanceof ConstraintViolationException) {
 			msg = "Erro de chave estrangeira: " + ((ConstraintViolationException) ex)
 					.getCause()
 					.getCause().getMessage();
-		}else if (ex instanceof SQLException) {
+		} else if (ex instanceof SQLException) {
 			msg = "Erro de SQL do Banco: " + ((SQLException) ex)
 					.getCause()
 					.getCause().getMessage();
-		}else {
+		} else {
 			msg = ex.getMessage();
 		}
 		
