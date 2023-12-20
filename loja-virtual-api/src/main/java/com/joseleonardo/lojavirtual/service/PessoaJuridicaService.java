@@ -28,13 +28,16 @@ public class PessoaJuridicaService {
 	private EnvioEmailService envioEmailService;
 	
 	public PessoaJuridica salvar(PessoaJuridica  pessoaJuridica) {
-		//pessoaJuridica = pessoaJuridicaRepository.save(pessoaJuridica);
-
 		for (int i = 0; i < pessoaJuridica.getEnderecos().size(); i++) {
 			pessoaJuridica.getEnderecos().get(i).setPessoa(pessoaJuridica);
 			pessoaJuridica.getEnderecos().get(i).setEmpresa(pessoaJuridica);
 		}
 		
+		String cnpjSemMascara = pessoaJuridica.getCnpj()
+				.replaceAll("\\.", "").replaceAll("\\/", "").replaceAll("\\-", "");
+		
+		pessoaJuridica.setCnpj(cnpjSemMascara);
+
 		pessoaJuridica = pessoaJuridicaRepository.save(pessoaJuridica);
 		
 		Usuario usuarioPessoaJuridica = usuarioRepository.buscarUsuarioPorPessoaIdOuLogin(

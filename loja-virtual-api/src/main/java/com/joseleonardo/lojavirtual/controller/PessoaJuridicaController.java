@@ -12,6 +12,7 @@ import com.joseleonardo.lojavirtual.exception.LojaVirtualException;
 import com.joseleonardo.lojavirtual.model.PessoaJuridica;
 import com.joseleonardo.lojavirtual.repository.PessoaJuridicaRepository;
 import com.joseleonardo.lojavirtual.service.PessoaJuridicaService;
+import com.joseleonardo.lojavirtual.util.ValidacaoCNPJ;
 
 @RestController
 public class PessoaJuridicaController {
@@ -43,6 +44,10 @@ public class PessoaJuridicaController {
 			throw new LojaVirtualException("Não foi possível cadastrar, pois "
 			        + "já existe uma pessoa jurídica cadastrada com a inscrição estadual " 
 			        + pessoaJuridica.getInscricaoEstadual());
+		}
+		
+		if (!ValidacaoCNPJ.isCNPJ(pessoaJuridica.getCnpj())) {
+			throw new LojaVirtualException("O CNPJ " + pessoaJuridica.getCnpj() + " está inválido");
 		}
 
 		pessoaJuridica = peossaJuridicaService.salvar(pessoaJuridica);
