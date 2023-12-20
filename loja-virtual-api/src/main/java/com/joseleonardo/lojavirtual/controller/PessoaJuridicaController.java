@@ -36,6 +36,14 @@ public class PessoaJuridicaController {
 					+ "já existe uma pessoa jurídica cadastrada com o CNPJ "
 					+ pessoaJuridica.getCnpj());
 		}
+		
+		if (pessoaJuridica.getId() == null &&
+				pessoaJuridicaRepository.existeInscricaoEstadualCadastrada(
+						pessoaJuridica.getInscricaoEstadual()) != null) {
+			throw new LojaVirtualException("Não foi possível cadastrar, pois "
+			        + "já existe uma pessoa jurídica cadastrada com a inscrição estadual " 
+			        + pessoaJuridica.getInscricaoEstadual());
+		}
 
 		pessoaJuridica = peossaJuridicaService.salvar(pessoaJuridica);
 

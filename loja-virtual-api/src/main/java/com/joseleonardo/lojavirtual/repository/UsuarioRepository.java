@@ -13,12 +13,24 @@ import com.joseleonardo.lojavirtual.model.Usuario;
 
 @Repository
 public interface UsuarioRepository extends CrudRepository<Usuario, Long> {
+	
+	@Query("SELECT u FROM Usuario u WHERE u.dataAtualizacaoSenha <= current_date - 90")
+	List<Usuario> usuariosComSenhaVencida();
 
 	@Query("SELECT u FROM Usuario u WHERE u.login = ?1")
 	Usuario buscarUsuarioPorLogin(String login);
 
 	@Query("SELECT u FROM Usuario u WHERE u.pessoa.id = ?1 OR u.login = ?2")
 	Usuario buscarUsuarioPorPessoaIdOuLogin(Long id, String email);
+	
+	@Query(nativeQuery = true, 
+			value = 
+			  "SELECT constraint_name "
+			+ "FROM   information_schema.constraint_column_usage "
+			+ "WHERE  table_name = 'usuario_acesso' "
+			+ "       AND column_name = 'acesso_id' "
+			+ "       AND constraint_name <> 'unique_usuario_acesso'")
+	String consultarConstraintNaTabelaUsuarioAcesso();
 
 	@Transactional
 	@Modifying
@@ -34,6 +46,4 @@ public interface UsuarioRepository extends CrudRepository<Usuario, Long> {
 	        	 + "(SELECT id FROM Acesso WHERE nome = ?2 LIMIT 1)) ")
 	void inserirQualquerAcesso(Long id, String acesso);
 
-	@Query("SELECT u FROM Usuario u WHERE u.dataAtualizacaoSenha <= current_date - 90")
-	List<Usuario> usuariosComSenhaVencida();	
 }

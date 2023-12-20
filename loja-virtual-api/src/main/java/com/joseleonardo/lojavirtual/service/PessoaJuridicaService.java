@@ -41,7 +41,7 @@ public class PessoaJuridicaService {
 				pessoaJuridica.getId(), pessoaJuridica.getEmail());
 		
 		if (usuarioPessoaJuridica == null) {
-			String constraint = pessoaJuridicaRepository.consultaConstraintAcesso();
+			String constraint = usuarioRepository.consultarConstraintNaTabelaUsuarioAcesso();
 			
 			if (constraint != null) {
 				jdbcTemplate.execute("BEGIN; "
