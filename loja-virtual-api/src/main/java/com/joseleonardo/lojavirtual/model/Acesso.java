@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.security.core.GrantedAuthority;
 
@@ -25,6 +27,8 @@ public class Acesso implements GrantedAuthority {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_acesso")
 	private Long id;
 
+	@NotBlank(message = "O nome deve ser informado")
+	@NotNull(message = "O nome deve ser informado")
 	@Column(nullable = false)
 	private String nome; /* Acesso ex: ROLE_ADMIN ou ROLE_VENDEDOR" */
 

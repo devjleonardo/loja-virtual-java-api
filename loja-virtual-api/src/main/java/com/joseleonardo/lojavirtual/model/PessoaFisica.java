@@ -8,6 +8,8 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "pessoa_fisica")
@@ -16,6 +18,8 @@ public class PessoaFisica extends Pessoa {
 
 	private static final long serialVersionUID = 1L;
 
+	@NotBlank(message = "O cpf deve ser informado")
+	@NotNull(message = "O cpf deve ser informado")
 	@Column(nullable = false)
 	private String cpf;
 

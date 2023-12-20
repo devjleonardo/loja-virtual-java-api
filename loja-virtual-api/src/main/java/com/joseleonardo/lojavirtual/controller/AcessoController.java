@@ -2,6 +2,8 @@ package com.joseleonardo.lojavirtual.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +31,7 @@ public class AcessoController {
 	
 	@ResponseBody /* Pode dar um retorno da API */
 	@PostMapping(value = "**/salvarAcesso") /* Mapeando a URL para receber JSON */
-	public ResponseEntity<Acesso> salvarAcesso(@RequestBody Acesso acesso) 
+	public ResponseEntity<Acesso> salvarAcesso(@RequestBody @Valid Acesso acesso) 
 			throws LojaVirtualException { 
 		if (acesso.getId() == null) {
 			List<Acesso> acessosExistente = acessoRepository

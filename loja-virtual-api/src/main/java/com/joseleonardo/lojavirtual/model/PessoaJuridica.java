@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "pessoa_juridica")
@@ -12,17 +14,25 @@ public class PessoaJuridica extends Pessoa {
 
 	private static final long serialVersionUID = 1L;
 
+	@NotBlank(message = "O CNPJ deve ser informado")
+	@NotNull(message = "O CNPJ deve ser informado")
 	@Column(nullable = false)
 	private String cnpj;
 
+	@NotBlank(message = "A inscrição estadual deve ser informada")
+	@NotNull(message = "A inscrição estadual deve ser informada")
 	@Column(nullable = false)
 	private String inscricaoEstadual;
 
 	private String inscricaoMunicipal;
 
+	@NotBlank(message = "O nome fantasia deve ser informado")
+	@NotNull(message = "O nome fantasia deve ser informado")
 	@Column(nullable = false)
 	private String nomeFantasia;
 
+	@NotBlank(message = "A razão social deve ser informada")
+	@NotNull(message = "A razão social deve ser informada")
 	@Column(nullable = false)
 	private String razaoSocial;
 

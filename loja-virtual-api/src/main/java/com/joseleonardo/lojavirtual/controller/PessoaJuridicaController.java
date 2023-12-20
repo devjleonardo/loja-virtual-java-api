@@ -1,5 +1,7 @@
 package com.joseleonardo.lojavirtual.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +28,7 @@ public class PessoaJuridicaController {
 	@ResponseBody
 	@PostMapping(value = "**/salvarPessoaJuridica")
 	public ResponseEntity<PessoaJuridica> salvarPessoaJuridica(
-			@RequestBody PessoaJuridica pessoaJuridica) throws LojaVirtualException {
+			@RequestBody @Valid PessoaJuridica pessoaJuridica) throws LojaVirtualException {
 		if (pessoaJuridica == null) {
 			throw new LojaVirtualException("Pessoa jurídica não pode ser nula");
 		}
