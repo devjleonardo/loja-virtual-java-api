@@ -11,8 +11,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.joseleonardo.lojavirtual.exception.LojaVirtualException;
+import com.joseleonardo.lojavirtual.model.Endereco;
 import com.joseleonardo.lojavirtual.model.PessoaJuridica;
+import com.joseleonardo.lojavirtual.model.dto.CepDTO;
+import com.joseleonardo.lojavirtual.repository.EnderecoRepository;
 import com.joseleonardo.lojavirtual.repository.PessoaJuridicaRepository;
+import com.joseleonardo.lojavirtual.service.ConsultaCepService;
 import com.joseleonardo.lojavirtual.service.PessoaJuridicaService;
 import com.joseleonardo.lojavirtual.util.ValidacaoCNPJ;
 
@@ -21,9 +25,15 @@ public class PessoaJuridicaController {
 	
 	@Autowired
 	private PessoaJuridicaRepository pessoaJuridicaRepository;
-
+	
 	@Autowired
 	private PessoaJuridicaService peossaJuridicaService;
+	
+	@Autowired
+	private ConsultaCepService consultaCepService;
+	
+	@Autowired
+	private EnderecoRepository enderecoRepository;
 
 	@ResponseBody
 	@PostMapping(value = "**/salvarPessoaJuridica")
@@ -55,6 +65,35 @@ public class PessoaJuridicaController {
 		
 		if (!ValidacaoCNPJ.isCNPJ(pessoaJuridica.getCnpj())) {
 			throw new LojaVirtualException("O CNPJ " + pessoaJuridica.getCnpj() + " está inválido");
+		}
+		
+		if (pessoaJuridica.getId() == null || pessoaJuridica.getId() <= 0) {
+			for (int i = 0; i < pessoaJuridica.getEnderecos().size(); i++) {
+				CepDTO cepDTO = consultaCepService
+						.consultarCep(pessoaJuridica.getEnderecos().get(i).getCep());
+
+				pessoaJuridica.getEnderecos().get(i).setLogradouro(cepDTO.getLogradouro());
+				pessoaJuridica.getEnderecos().get(i).setBairro(cepDTO.getBairro());
+				pessoaJuridica.getEnderecos().get(i).setComplemento(cepDTO.getComplemento());
+				pessoaJuridica.getEnderecos().get(i).setCep(cepDTO.getLocalidade());
+				pessoaJuridica.getEnderecos().get(i).setUf(cepDTO.getUf());
+			}
+		} else {
+			for (int i = 0; i < pessoaJuridica.getEnderecos().size(); i++) {
+				Endereco enderecoAtual = enderecoRepository.findById(
+						pessoaJuridica.getEnderecos().get(i).getId()).get();
+
+				if (!enderecoAtual.getCep().equals(pessoaJuridica.getEnderecos().get(i).getCep())) {
+					CepDTO cepDTO = consultaCepService
+							.consultarCep(pessoaJuridica.getEnderecos().get(i).getCep());
+
+					pessoaJuridica.getEnderecos().get(i).setLogradouro(cepDTO.getLogradouro());
+					pessoaJuridica.getEnderecos().get(i).setBairro(cepDTO.getBairro());
+					pessoaJuridica.getEnderecos().get(i).setComplemento(cepDTO.getComplemento());
+					pessoaJuridica.getEnderecos().get(i).setCep(cepDTO.getLocalidade());
+					pessoaJuridica.getEnderecos().get(i).setUf(cepDTO.getUf());
+				}
+			}
 		}
 
 		pessoaJuridica = peossaJuridicaService.salvar(pessoaJuridica);
