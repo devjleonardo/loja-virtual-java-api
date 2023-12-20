@@ -25,11 +25,16 @@ public class PessoaJuridicaController {
 
 	@ResponseBody
 	@PostMapping(value = "**/salvarPessoaJuridica")
-	public ResponseEntity<PessoaJuridica> salvar(@RequestBody PessoaJuridica pessoaJuridica) 
-			throws LojaVirtualException {
+	public ResponseEntity<PessoaJuridica> salvarPessoaJuridica(
+			@RequestBody PessoaJuridica pessoaJuridica) throws LojaVirtualException {
 		if (pessoaJuridica == null) {
 			throw new LojaVirtualException("Pessoa jurídica não pode ser nula");
 		}
+		
+		String cnpjSemMascara = pessoaJuridica.getCnpj()
+				.replaceAll("\\.", "").replaceAll("\\/", "").replaceAll("\\-", "");
+		
+		pessoaJuridica.setCnpj(cnpjSemMascara);
 
 		if (pessoaJuridica.getId() == null 
 				&& pessoaJuridicaRepository.existeCnpjCadastrado(pessoaJuridica.getCnpj()) != null) {

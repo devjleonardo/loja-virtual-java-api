@@ -33,11 +33,6 @@ public class PessoaJuridicaService {
 			pessoaJuridica.getEnderecos().get(i).setEmpresa(pessoaJuridica);
 		}
 		
-		String cnpjSemMascara = pessoaJuridica.getCnpj()
-				.replaceAll("\\.", "").replaceAll("\\/", "").replaceAll("\\-", "");
-		
-		pessoaJuridica.setCnpj(cnpjSemMascara);
-
 		pessoaJuridica = pessoaJuridicaRepository.save(pessoaJuridica);
 		
 		Usuario usuarioPessoaJuridica = usuarioRepository.buscarUsuarioPorPessoaIdOuLogin(
@@ -78,8 +73,7 @@ public class PessoaJuridicaService {
 
 			try {
 				envioEmailService.enviarEmailHtml("Acesso gerado para Loja Virtual", 
-						mensagemHtml.toString(), 
-						pessoaJuridica.getEmail());
+						mensagemHtml.toString(), pessoaJuridica.getEmail());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
