@@ -1,5 +1,7 @@
 package com.joseleonardo.lojavirtual.repository;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.Modifying;
@@ -31,5 +33,7 @@ public interface UsuarioRepository extends CrudRepository<Usuario, Long> {
 	       value = "INSERT INTO usuario_acesso (usuario_id, acesso_id) VALUES (?1, "
 	        	 + "(SELECT id FROM Acesso WHERE nome = ?2 LIMIT 1)) ")
 	void inserirQualquerAcesso(Long id, String acesso);
-	
+
+	@Query("SELECT u FROM Usuario u WHERE u.dataAtualizacaoSenha <= current_date - 90")
+	List<Usuario> usuariosComSenhaVencida();	
 }
