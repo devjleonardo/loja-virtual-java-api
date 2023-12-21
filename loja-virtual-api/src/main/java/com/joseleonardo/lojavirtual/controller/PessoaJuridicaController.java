@@ -48,7 +48,7 @@ public class PessoaJuridicaController {
 		}
 		
 		if (pessoaJuridica.getTipoPessoa() == null) {
-			throw new LojaVirtualException("Informe o tipo Jurídica ou Fornecedor da loja");
+			throw new LojaVirtualException("Informe o tipo JURIDICA ou JURIDICA_FORNECEDOR");
 		}
 		
 		String cnpjSemMascara = pessoaJuridica.getCnpj()

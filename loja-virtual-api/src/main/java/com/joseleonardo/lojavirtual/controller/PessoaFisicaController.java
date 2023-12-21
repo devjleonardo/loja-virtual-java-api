@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.joseleonardo.lojavirtual.enums.TipoPessoa;
 import com.joseleonardo.lojavirtual.exception.LojaVirtualException;
 import com.joseleonardo.lojavirtual.model.PessoaFisica;
 import com.joseleonardo.lojavirtual.repository.PessoaFisicaRepository;
@@ -39,6 +40,10 @@ public class PessoaFisicaController {
 			@RequestBody @Valid PessoaFisica pessoaFisica) throws LojaVirtualException {
 		if (pessoaFisica == null) {
 			throw new LojaVirtualException("Pessoa física não pode ser nula");
+		}
+		
+		if (pessoaFisica.getTipoPessoa() == null) {
+			pessoaFisica.setTipoPessoa(TipoPessoa.FISICA.name());
 		}
 		
 		String cpfSemMascara = pessoaFisica.getCpf().replaceAll("\\.", "").replaceAll("\\-", "");
