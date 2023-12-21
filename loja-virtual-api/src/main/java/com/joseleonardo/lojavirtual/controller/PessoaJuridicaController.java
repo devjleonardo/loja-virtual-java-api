@@ -47,6 +47,10 @@ public class PessoaJuridicaController {
 			throw new LojaVirtualException("Pessoa jurídica não pode ser nula");
 		}
 		
+		if (pessoaJuridica.getTipoPessoa() == null) {
+			throw new LojaVirtualException("Informe o tipo Jurídica ou Fornecedor da loja");
+		}
+		
 		String cnpjSemMascara = pessoaJuridica.getCnpj()
 				.replaceAll("\\.", "").replaceAll("\\/", "").replaceAll("\\-", "");
 		
