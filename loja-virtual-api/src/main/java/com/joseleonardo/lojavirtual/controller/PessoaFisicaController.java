@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.joseleonardo.lojavirtual.exception.LojaVirtualException;
 import com.joseleonardo.lojavirtual.model.PessoaFisica;
 import com.joseleonardo.lojavirtual.repository.PessoaFisicaRepository;
+import com.joseleonardo.lojavirtual.service.AtualizacaoQuantidadeAcessoEndPointService;
 import com.joseleonardo.lojavirtual.service.PessoaFisicaService;
 import com.joseleonardo.lojavirtual.util.ValidacaoCPF;
 
@@ -28,6 +29,9 @@ public class PessoaFisicaController {
 
 	@Autowired
 	private PessoaFisicaService pessoaFisicaService;
+	
+	@Autowired
+	private AtualizacaoQuantidadeAcessoEndPointService atualizacaoQuantidadeAcessoEndPointService;
 	
 	@ResponseBody
 	@PostMapping(value = "**/salvarPessoaFisica")
@@ -63,6 +67,8 @@ public class PessoaFisicaController {
 		List<PessoaFisica> pessoasFisicas = pessoaFisicaRepository
 				.buscarPessoaFisicaPorNome(nome.trim().toUpperCase());
 
+		atualizacaoQuantidadeAcessoEndPointService.buscarPessoaFisicaPorNome();
+		
 		return new ResponseEntity<List<PessoaFisica>>(pessoasFisicas, HttpStatus.OK);
 	}
 	
