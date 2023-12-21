@@ -20,6 +20,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "produto")
@@ -32,32 +36,46 @@ public class Produto implements Serializable {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_produto")
 	private Long id;
 
+	@Size(min = 10, message = "O nome do produto deve ter mais de 10 letras")
+	@NotBlank(message = "O nome do produto deve ser informado")
+	@NotNull(message = "O nome do produto deve ser informado")
 	@Column(nullable = false)
 	private String nome;
 
+	@NotBlank(message = "A descrição do produto deve ser informada")
+	@NotNull(message = "A descrição do produto deve ser informada")
 	@Column(columnDefinition = "text", length = 2000, nullable = false)
 	private String descricao;
 
+	@NotNull(message = "O valor de venda do produto deve ser informado")
 	@Column(nullable = false)
 	private BigDecimal valorVenda = BigDecimal.ZERO;
 
+	@NotBlank(message = "O tipo da unidade do produto deve ser informado")
+	@NotNull(message = "O tipo da unidade do produto deve ser informado")
 	@Column(nullable = false)
 	private String tipoUnidade;
 
 	private Boolean ativo = Boolean.TRUE;
 
+	@NotNull(message = "A altura do produto deve ser informada")
 	@Column(nullable = false)
 	private Double altura;
 
+	@NotNull(message = "O peso do produto deve ser informado")
 	@Column(nullable = false)
 	private Double peso;
 
+	@NotNull(message = "A largura do produto deve ser informada")
 	@Column(nullable = false)
 	private Double largura;
 
+	@NotNull(message = "A profundidade do produto deve ser informada")
 	@Column(nullable = false)
 	private Double profundidade;
 
+	@Min(value = 1, message = "A quantidade de estoque do produto deve ser maior que 0")
+	@NotNull(message = "A quantidade de estoque do produto deve ser informada")
 	@Column(nullable = false)
 	private Integer quantidadeEstoque = 0;
 
