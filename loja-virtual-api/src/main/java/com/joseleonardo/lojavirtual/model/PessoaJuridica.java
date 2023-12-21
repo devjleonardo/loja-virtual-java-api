@@ -7,6 +7,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "pessoa_juridica")
 @PrimaryKeyJoinColumn(name = "id")
@@ -84,6 +86,12 @@ public class PessoaJuridica extends Pessoa {
 
 	public void setCategoria(String categoria) {
 		this.categoria = categoria;
+	}
+	
+	@JsonIgnore
+	@Override
+	public PessoaJuridica getEmpresa() {
+		return super.getEmpresa();
 	}
 
 }

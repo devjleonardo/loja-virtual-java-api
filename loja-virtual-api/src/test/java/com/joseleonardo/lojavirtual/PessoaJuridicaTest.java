@@ -1,7 +1,5 @@
 package com.joseleonardo.lojavirtual;
 
-import java.util.Calendar;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,17 +23,18 @@ public class PessoaJuridicaTest extends TestCase {
 	@Test
 	public void testCadastrarPessoaJuridica() throws LojaVirtualException {
 		PessoaJuridica pessoaJuridica = new PessoaJuridica();
-		pessoaJuridica.setCnpj("" + Calendar.getInstance().getTimeInMillis());
+		pessoaJuridica.setCnpj("18475547000109");
 		pessoaJuridica.setNome("Lojas InovarTech");
-		pessoaJuridica.setEmail("inovar.tech2@inovartech.com");
+		pessoaJuridica.setEmail("inovar.tech@inovartech.com");
 		pessoaJuridica.setTelefone("(44) 9.9575-9994");
 		pessoaJuridica.setInscricaoEstadual("3954911569");
 		pessoaJuridica.setRazaoSocial("Alice & Carlin Lojas InovarTech LTDA");
 		pessoaJuridica.setNomeFantasia("Lojas InovarTech");
 		pessoaJuridica.setTipoPessoa("JURIDICA");
+		pessoaJuridica.setEmpresa(pessoaJuridica);
 		
 		Endereco endereco1 = new Endereco();
-		endereco1.setCep("07.152-816");
+		endereco1.setCep("07152816");
 		endereco1.setLogradouro("Rua Monte das Oliveiras");
 		endereco1.setBairro("Jardim Oliveira II");
 		endereco1.setNumero("389");
@@ -49,7 +48,7 @@ public class PessoaJuridicaTest extends TestCase {
 		pessoaJuridica.getEnderecos().add(endereco1);
 
 		Endereco endereco2 = new Endereco();
-		endereco2.setCep("04.467-150");
+		endereco2.setCep("04467150");
 		endereco2.setLogradouro("Rua Wilson Cantoni");
 		endereco2.setBairro("Parque Primavera");
 		endereco2.setNumero("896");
