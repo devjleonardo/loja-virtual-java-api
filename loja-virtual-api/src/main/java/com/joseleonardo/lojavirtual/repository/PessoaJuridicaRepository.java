@@ -2,14 +2,14 @@ package com.joseleonardo.lojavirtual.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import com.joseleonardo.lojavirtual.model.PessoaJuridica;
 
 @Repository
-public interface PessoaJuridicaRepository extends CrudRepository<PessoaJuridica, Long> {
+public interface PessoaJuridicaRepository extends JpaRepository<PessoaJuridica, Long> {
 
 	@Query("SELECT pj FROM PessoaJuridica pj WHERE UPPER(TRIM(pj.nome)) LIKE %?1%")
 	List<PessoaJuridica> buscarPessoaJuridicaPorNome(String nome);
