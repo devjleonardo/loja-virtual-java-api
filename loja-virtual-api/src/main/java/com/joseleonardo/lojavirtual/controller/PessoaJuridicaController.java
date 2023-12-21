@@ -1,10 +1,14 @@
 package com.joseleonardo.lojavirtual.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -99,6 +103,30 @@ public class PessoaJuridicaController {
 		pessoaJuridica = peossaJuridicaService.salvar(pessoaJuridica);
 
 		return new ResponseEntity<PessoaJuridica>(pessoaJuridica, HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@GetMapping(value = "**/buscarPessoaJuridicaPorNome/{nome}")
+	public ResponseEntity<List<PessoaJuridica>> buscarPessoaFisicaPorNome(
+			@PathVariable("nome") String nome) {
+		List<PessoaJuridica> pessoasJuridicas = pessoaJuridicaRepository
+				.buscarPessoaJuridicaPorNome(nome.trim().toUpperCase());
+
+		return new ResponseEntity<List<PessoaJuridica>>(pessoasJuridicas, HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@GetMapping(value = "**/buscarPessoaJuridicaPorCnpj/{cnpj}")
+	public ResponseEntity<PessoaJuridica> buscarPessoaJuridicaPorCnpj(
+			@PathVariable("cnpj") String cnpj) throws LojaVirtualException {
+		PessoaJuridica pessoaFisica = pessoaJuridicaRepository.buscarPessoaJuridicaPorCnpj(cnpj);
+		
+		if (pessoaFisica == null) {
+			throw new LojaVirtualException("Não existe nenhuma pessoa jurídica cadastrada "
+					+ "com esse CNPJ " + cnpj);
+		}
+
+		return new ResponseEntity<PessoaJuridica>(pessoaFisica, HttpStatus.OK);
 	}
 
 }
