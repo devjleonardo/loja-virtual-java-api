@@ -53,7 +53,7 @@ public class PessoaFisicaController {
 		if (pessoaFisica.getId() == null &&
 				pessoaFisicaRepository.existeCpfCadastrado(pessoaFisica.getCpf()) != null) {
 			throw new LojaVirtualException("Não foi possível cadastrar, pois "
-					+ "já existe uma pessoa física cadastrada com o CPF " + pessoaFisica.getCpf());
+					+ "já existe uma pessoa física cadastrada com o CPF: " + pessoaFisica.getCpf());
 		}
 
 		if (!ValidacaoCPF.isCPF(pessoaFisica.getCpf())) {

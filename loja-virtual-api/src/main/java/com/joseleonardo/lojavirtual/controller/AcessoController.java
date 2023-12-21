@@ -39,7 +39,7 @@ public class AcessoController {
 		
 			if (!acessosExistente.isEmpty()) {
 				throw new LojaVirtualException("Não foi possível cadastrar, pois "
-						+ "já existe um acesso cadastrado com o nome " + acesso.getNome());
+						+ "já existe um acesso cadastrado com o nome: " + acesso.getNome());
 			}
 		}
 		
@@ -68,7 +68,7 @@ public class AcessoController {
 		Acesso acesso = acessoRepository.findById(id).orElse(null);
 		
 		if (acesso == null) {
-			throw new LojaVirtualException("Não econtrou nenhum acesso com o código " + id);
+			throw new LojaVirtualException("Não econtrou nenhum acesso com o código: " + id);
 		}
 
 		return new ResponseEntity<Acesso>(acesso, HttpStatus.OK);

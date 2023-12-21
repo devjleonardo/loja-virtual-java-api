@@ -37,7 +37,7 @@ public class CategoriaProdutoController {
 				&& categoriaProdutoRepository.existeCategoriaProdutoCadastradaComNome(
 						categoriaProduto.getNome().trim().toUpperCase())) {
 			throw new LojaVirtualException("Não foi possível cadastrar, pois "
-					+ "já existe uma categoria de produto com o nome " 
+					+ "já existe uma categoria de produto com o nome: " 
 					+ categoriaProduto.getNome());
 		}
 

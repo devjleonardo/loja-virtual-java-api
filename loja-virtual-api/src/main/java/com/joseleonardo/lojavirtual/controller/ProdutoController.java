@@ -41,7 +41,7 @@ public class ProdutoController {
 
 			if (!produtos.isEmpty()) {
 				throw new LojaVirtualException("Não foi possível cadastrar, pois "
-						+ "já existe um produto com o nome " + produto.getNome());
+						+ "já existe um produto com o nome: " + produto.getNome());
 			}
 		}
 
@@ -78,7 +78,7 @@ public class ProdutoController {
 		Produto produto = produtoRepository.findById(id).orElse(null);
 
 		if (produto == null) {
-			throw new LojaVirtualException("Não econtrou nenhum produto com o código " + id);
+			throw new LojaVirtualException("Não econtrou nenhum produto com o código: " + id);
 		}
 		
 		return new ResponseEntity<Produto>(produto, HttpStatus.OK);

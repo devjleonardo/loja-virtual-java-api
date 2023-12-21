@@ -35,7 +35,7 @@ public class MarcaProdutoController {
 
 			if (!marcasProduto.isEmpty()) {
 				throw new LojaVirtualException("Não foi possível cadastrar, pois "
-						+ "já existe uma marca de produto com o nome " + marcaProduto.getNome());
+						+ "já existe uma marca de produto com o nome: " + marcaProduto.getNome());
 			}
 		}
 
@@ -64,7 +64,7 @@ public class MarcaProdutoController {
 		MarcaProduto marcaProduto = marcaProdutoRepository.findById(id).orElse(null);
 
 		if (marcaProduto == null) {
-			throw new LojaVirtualException("Não econtrou nenhuma marca de produto com o código " 
+			throw new LojaVirtualException("Não econtrou nenhuma marca de produto com o código: " 
 		            + id);
 		}
 

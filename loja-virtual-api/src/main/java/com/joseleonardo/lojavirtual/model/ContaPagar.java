@@ -20,6 +20,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.joseleonardo.lojavirtual.enums.StatusContaPagar;
 
@@ -34,18 +36,23 @@ public class ContaPagar implements Serializable {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_conta_pagar")
 	private Long id;
 
+	@NotBlank(message = "A descrição da conta a pagar deve ser informada")
+	@NotNull(message = "A descrição da conta a pagar deve ser informada")
 	@Column(nullable = false)
 	private String descricao;
 
+	@NotNull(message = "O valor total da conta a pagar deve ser informado")
 	@Column(nullable = false)
 	private BigDecimal valorTotal;
 
 	private BigDecimal valorDesconto;
 
+	@NotNull(message = "O status da conta a pagar deve ser informado")
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private StatusContaPagar status;
 
+	@NotNull(message = "A data de vencimento da conta a pagar deve ser informada")
 	@Column(nullable = false)
 	@Temporal(TemporalType.DATE)
 	private Date dataVencimento;
