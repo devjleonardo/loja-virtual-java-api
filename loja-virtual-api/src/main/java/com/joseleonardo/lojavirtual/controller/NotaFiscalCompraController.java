@@ -77,7 +77,7 @@ public class NotaFiscalCompraController {
 		}
 
 		/* Deleta o filho */
-		notaItemProdutoRepository.deletarNotaFiscalCompraPorId(id);
+		notaItemProdutoRepository.deletarNotaItemProdutoPorNotaFiscalCompraId(id);
 
 		/* Delta o pai */
 		notaFiscalCompraRepository.deleteById(id);

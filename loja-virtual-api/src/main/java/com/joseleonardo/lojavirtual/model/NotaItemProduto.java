@@ -14,6 +14,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "nota_item_produto")
@@ -26,6 +28,8 @@ public class NotaItemProduto implements Serializable {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_nota_item_produto")
 	private Long id;
 
+	@Min(value = 1, message = "A quantidade da nota de item produto deve ser maior que 0")
+	@NotNull(message =  "A quantidade da nota de item produto deve ser informada")
 	@Column(nullable = false)
 	private Double quantidade;
 
