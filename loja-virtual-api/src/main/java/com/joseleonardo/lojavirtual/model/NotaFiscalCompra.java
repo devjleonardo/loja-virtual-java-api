@@ -18,6 +18,9 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "nota_fiscal_compra")
@@ -30,22 +33,31 @@ public class NotaFiscalCompra implements Serializable {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_nota_fiscal_compra")
 	private Long id;
 
+	@NotBlank(message = "O número da nota fiscal de compra deve ser informado")
+	@NotNull(message = "O número da nota fiscal de compra deve ser informado")
 	@Column(nullable = false)
 	private String numero;
 	
+	@NotBlank(message = "A série da nota fiscal de compra deve ser informada")
+	@NotNull(message = "A série da nota fiscal de compra deve ser informada")
 	@Column(nullable = false)
 	private String serie;
 
 	private String descricaoObservacao;
 
+	@Min(value = 1, message = "O valor total da nota fical de compra deve ser maior que 0")
+	@NotNull(message = "O valor total da nota fiscal de compra deve ser informado")
 	@Column(nullable = false)
 	private BigDecimal valorTotal;
 
 	private BigDecimal valorDesconto;
 
+	@Min(value = 1, message = "O valor icms da nota fical de compra deve ser maior que 0")
+	@NotNull(message = "O valor icms da nota fiscal de compra deve ser informado")
 	@Column(nullable = false)
 	private BigDecimal valorIcms;
 
+	@NotNull(message = "A data da compra da nota fiscal de compra deve ser informada")
 	@Column(nullable = false)
 	@Temporal(TemporalType.DATE)
 	private Date dataCompra;
