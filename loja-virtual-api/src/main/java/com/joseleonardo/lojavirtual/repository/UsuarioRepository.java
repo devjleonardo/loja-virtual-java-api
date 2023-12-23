@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.joseleonardo.lojavirtual.model.Usuario;
 
 @Repository
+@Transactional
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 	
 	@Query("SELECT u FROM Usuario u WHERE u.dataAtualizacaoSenha <= current_date - 90")
