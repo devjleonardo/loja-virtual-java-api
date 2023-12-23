@@ -57,7 +57,7 @@ public abstract class Pessoa implements Serializable {
 	private String tipoPessoa; /* FISICA, JURIDICA, CLIENTE, USUARIO, EMPRESA */
 	
 	@ManyToOne(targetEntity = PessoaJuridica.class)
-	@JoinColumn(name = "empresa_id", foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "fk_empresa"))
+	@JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "fk_empresa"))
 	private PessoaJuridica empresa;
 	
 	@OneToMany(mappedBy = "pessoa", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)

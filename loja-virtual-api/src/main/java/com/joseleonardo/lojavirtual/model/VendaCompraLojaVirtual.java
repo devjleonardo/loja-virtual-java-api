@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
@@ -19,6 +20,10 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "venda_compra_loja_virtual")
@@ -31,51 +36,66 @@ public class VendaCompraLojaVirtual implements Serializable {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_venda_compra_loja_virtual")
 	private Long id;
 
+	@Min(value = 1, message = "O valor total da venda deve ser maior que 0")
+	@NotNull(message = "O valor total da venda deve ser informado")
 	@Column(nullable = false)
 	private BigDecimal valorTotal;
 
 	private BigDecimal valorDesconto;
 
+	@Min(value = 1, message = "O valor do frete da venda deve ser maior que 0")
+	@NotNull(message = "O valor de frete da venda deve ser informado")
 	@Column(nullable = false)
 	private BigDecimal valorFrete;
 
+	@Min(value = 1, message = "Os dias de entrega da venda deve ser maior que 0")
+	@NotNull(message = "Os dias de entrega da venda deve ser informado")
 	@Column(nullable = false)
 	private Integer diasEntrega;
 
+	@NotNull(message = "A data da venda deve ser informada")
 	@Column(nullable = false)
 	@Temporal(TemporalType.DATE)
 	private Date dataVenda;
 
+	@NotNull(message = "A data de entrega da venda deve ser informada")
 	@Column(nullable = false)
 	@Temporal(TemporalType.DATE)
 	private Date dataEntrega;
 
-	@ManyToOne(targetEntity = Pessoa.class)
+	@NotNull(message = "A pessoa da venda deve ser informada")
+	@ManyToOne(targetEntity = PessoaFisica.class, cascade = CascadeType.ALL)
 	@JoinColumn(name = "pessoa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "fk_pessoa"))
-	private Pessoa pessoa;
+	private PessoaFisica pessoa;
 	
 	@OneToOne
 	@JoinColumn(name = "cupom_desconto_id", foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "fk_cupom_desconto"))
 	private CupomDesconto cupomDesconto;
 
+	@NotNull(message = "A forma de pagamento da venda deve ser informada")
 	@ManyToOne
 	@JoinColumn(name = "forma_pagamento_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "fk_forma_pagamento"))
 	private FormaPagamento formaPagamento;
 	
-	@ManyToOne
+	@NotNull(message = "O endereço de entrega da venda deve ser informado")
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "endereco_entrega_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "fk_endereco_entrega"))
 	private Endereco enderecoEntrega;
 
-	@ManyToOne
+	@NotNull(message = "O endereço de cobrança da venda deve ser informado")
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "endereco_cobranca_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "fk_endereco_cobranca"))
 	private Endereco enderecoCobranca;
 
-	@OneToOne
-	@JoinColumn(name = "nota_fiscal_venda_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "fk_nota_fiscal_venda"))
+	@JsonIgnoreProperties(allowGetters = true)
+	@NotNull(message = "A nota fiscal da venda deve ser informado")
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "nota_fiscal_venda_id", nullable = true, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "fk_nota_fiscal_venda"))
 	private NotaFiscalVenda notaFiscalVenda;
 
+	@NotNull(message = "A empresa da venda deve ser informado")
 	@ManyToOne(targetEntity = PessoaJuridica.class)
-	@JoinColumn(name = "empresa_id", foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "fk_empresa"))
+	@JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "fk_empresa"))
 	private PessoaJuridica empresa;
 
 	public Long getId() {
@@ -134,11 +154,11 @@ public class VendaCompraLojaVirtual implements Serializable {
 		this.dataEntrega = dataEntrega;
 	}
 
-	public Pessoa getPessoa() {
+	public PessoaFisica getPessoa() {
 		return pessoa;
 	}
-
-	public void setPessoa(Pessoa pessoa) {
+	
+	public void setPessoa(PessoaFisica pessoa) {
 		this.pessoa = pessoa;
 	}
 
