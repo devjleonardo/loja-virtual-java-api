@@ -1,5 +1,6 @@
 package com.joseleonardo.lojavirtual.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +18,9 @@ public interface VendaCompraLojaVirtualRepository
 	@Query("SELECT vclv FROM VendaCompraLojaVirtual vclv "
 		 + "WHERE vclv.id = ?1 AND vclv.excluido = false")
 	Optional<VendaCompraLojaVirtual> buscarVendaCompraLojaVirtualPorIdSemExclusao(Long id);
+	
+	@Query("SELECT iv.vendaCompraLojaVirtual FROM ItemVendaLoja iv "
+		 + "WHERE iv.vendaCompraLojaVirtual.excluido = false AND iv.produto.id = ?1")
+	List<VendaCompraLojaVirtual> buscarVendaCompraLojaVirtualPorProdutoId(Long produtoId);
+	
 }
