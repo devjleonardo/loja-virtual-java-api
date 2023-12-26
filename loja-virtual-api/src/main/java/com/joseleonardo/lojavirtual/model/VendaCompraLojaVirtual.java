@@ -66,6 +66,8 @@ public class VendaCompraLojaVirtual implements Serializable {
 	@Column(nullable = false)
 	@Temporal(TemporalType.DATE)
 	private Date dataEntrega;
+	
+	private Boolean excluido = Boolean.FALSE;
 
 	@NotNull(message = "A pessoa da venda deve ser informada")
 	@ManyToOne(targetEntity = PessoaFisica.class, cascade = CascadeType.ALL)
@@ -161,10 +163,18 @@ public class VendaCompraLojaVirtual implements Serializable {
 		this.dataEntrega = dataEntrega;
 	}
 
+	public Boolean getExcluido() {
+		return excluido;
+	}
+
+	public void setExcluido(Boolean excluido) {
+		this.excluido = excluido;
+	}
+
 	public PessoaFisica getPessoa() {
 		return pessoa;
 	}
-	
+
 	public void setPessoa(PessoaFisica pessoa) {
 		this.pessoa = pessoa;
 	}
@@ -216,11 +226,11 @@ public class VendaCompraLojaVirtual implements Serializable {
 	public void setEmpresa(PessoaJuridica empresa) {
 		this.empresa = empresa;
 	}
-	
+
 	public List<ItemVendaLoja> getItensVendaLoja() {
 		return itensVendaLoja;
 	}
-	
+
 	public void setItensVendaLoja(List<ItemVendaLoja> itensVendaLoja) {
 		this.itensVendaLoja = itensVendaLoja;
 	}

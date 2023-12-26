@@ -24,4 +24,22 @@ public class VendaCompraLojaVirtualService {
 		jdbcTemplate.execute(sql);
 	} 
 	
+	public void desativarVendaCompraLojaVirtualPorIdAtravesDaExclusaoLogica(Long id) {
+		String sql =
+				   "BEGIN; "
+				 + "UPDATE venda_compra_loja_virtual SET excluido = true WHERE id = " + id + "; "
+				 + "COMMIT;";
+		
+		jdbcTemplate.execute(sql);
+	}
+	
+	public void ativarVendaCompraLojaVirtualPorIdDesativadaAtravesDaExclusaoLogica(Long id) {
+		String sql =
+				   "BEGIN; "
+				 + "UPDATE venda_compra_loja_virtual SET excluido = false WHERE id = " + id + "; "
+				 + "COMMIT;";
+		
+		jdbcTemplate.execute(sql);
+	}
+	
 }

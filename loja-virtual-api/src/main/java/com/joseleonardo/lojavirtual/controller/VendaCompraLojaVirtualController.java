@@ -127,11 +127,43 @@ public class VendaCompraLojaVirtualController {
 	}
 	
 	@ResponseBody
+	@DeleteMapping(value = "**/desativarVendaCompraLojaVirtualPorIdAtravesDaExclusaoLogica/{id}")
+	public ResponseEntity<?> desativarVendaCompraLojaVirtualPorIdAtravesDaExclusaoLogica(
+			@PathVariable("id") Long id) {
+		if (!vendaCompraLojaVirtualRepository.findById(id).isPresent()) {
+			return new ResponseEntity<>("A venda de código "
+					+ id + " já foi desativada por exclusão lógica ou não existe", HttpStatus.OK);
+		}
+		
+		vendaCompraLojaVirtualService
+		        .desativarVendaCompraLojaVirtualPorIdAtravesDaExclusaoLogica(id);
+		
+		return new ResponseEntity<>("Venda desativada com sucesso através da exclusão lógica", 
+				HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@GetMapping(value = "**/ativarVendaCompraLojaVirtualPorIdDesativadaAtravesDaExclusaoLogica/{id}")
+	public ResponseEntity<?> ativarVendaCompraLojaVirtualPorIdDesativadaAtravesDaExclusaoLogica(
+			@PathVariable("id") Long id) {
+		if (!vendaCompraLojaVirtualRepository.findById(id).isPresent()) {
+			return new ResponseEntity<>("A venda de código "
+					+ id + " já foi removida ou não existe", HttpStatus.OK);
+		}
+		
+		vendaCompraLojaVirtualService
+		        .ativarVendaCompraLojaVirtualPorIdDesativadaAtravesDaExclusaoLogica(id);
+		
+		return new ResponseEntity<>("Venda que foi desativada por causa da exclusão lógica, "
+				+ "foi ativada com sucesso", HttpStatus.OK);
+	}
+	
+	@ResponseBody
 	@GetMapping(value = "**/buscarVendaCompraLojaVirtualPorId/{id}")
 	public ResponseEntity<VendaCompraLojaVirtualDTO>buscarVendaCompraLojaVirtualPorId(
 			@PathVariable("id") Long id) throws LojaVirtualException {
 		VendaCompraLojaVirtual vendaCompraLojaVirtual = vendaCompraLojaVirtualRepository
-		        .findById(id).orElse(null);
+		        .buscarVendaCompraLojaVirtualPorIdSemExclusao(id).orElse(null);
 		
 		if (vendaCompraLojaVirtual == null) {
 			throw new LojaVirtualException("Não econtrou nenhuma venda com o código: " + id);
