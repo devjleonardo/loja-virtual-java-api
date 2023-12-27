@@ -238,4 +238,64 @@ public class VendaCompraLojaVirtualController {
 				HttpStatus.OK);
 	}
 	
+	@ResponseBody
+	@GetMapping(value = "**/buscarVendaCompraLojaVirtualDeFormaDinamica/{valor}/{tipoConsulta}")
+	public ResponseEntity<List<VendaCompraLojaVirtualDTO>> buscarVendaCompraLojaVirtualDeFormaDinamica(
+			@PathVariable("valor") String valor, 
+			@PathVariable("tipoConsulta") String tipoConsulta) throws LojaVirtualException {
+		List<VendaCompraLojaVirtual> vendasCompraLojaVirtual = new ArrayList<>();
+		
+		if (tipoConsulta.equalsIgnoreCase("POR_PRODUTO_ID")) {
+			long produtoId = Long.parseLong(valor);
+			
+			Produto produto = produtoRepository.findById(produtoId).orElse(null);
+			
+			if (produto == null) {
+				throw new LojaVirtualException("Não econtrou nenhum produto com o código: " 
+			            + valor);
+			}
+			
+			vendasCompraLojaVirtual = vendaCompraLojaVirtualRepository
+			        .buscarVendaCompraLojaVirtualPorProdutoId(produtoId);
+		} else if (tipoConsulta.equalsIgnoreCase("POR_NOME_DO_PRODUTO")) {
+			vendasCompraLojaVirtual = vendaCompraLojaVirtualRepository
+			        .buscarVendaCompraLojaVirtualPorNomeDoProduto(valor.trim().toUpperCase());
+		} else if (tipoConsulta.equalsIgnoreCase("POR_NOME_DO_CLIENTE")) {
+			vendasCompraLojaVirtual = vendaCompraLojaVirtualRepository
+			        .buscarVendaCompraLojaVirtualPorNomeDoCliente(valor.trim().toUpperCase());
+		} else if (tipoConsulta.equalsIgnoreCase("POR_ENDERECO_DE_ENTREGA")) {
+			vendasCompraLojaVirtual = vendaCompraLojaVirtualRepository
+			        .buscarVendaCompraLojaVirtualPorEnderecoDeEntrega(valor.trim().toUpperCase());
+		} else if (tipoConsulta.equalsIgnoreCase("POR_ENDERECO_DE_COBRANCA")) {
+			vendasCompraLojaVirtual = vendaCompraLojaVirtualRepository
+			        .buscarVendaCompraLojaVirtualPorEnderecoDeCobranca(valor.trim().toUpperCase());
+		}
+		
+		List<VendaCompraLojaVirtualDTO> vendasCompraLojaVirtualDTO = new ArrayList<>();
+		
+		for (VendaCompraLojaVirtual vendaCompraLojaVirtual : vendasCompraLojaVirtual) {
+			VendaCompraLojaVirtualDTO vendaCompraLojaVirtualDTO = new VendaCompraLojaVirtualDTO();
+			vendaCompraLojaVirtualDTO.setId(vendaCompraLojaVirtual.getId());
+			vendaCompraLojaVirtualDTO.setValorTotal(vendaCompraLojaVirtual.getValorTotal());
+			vendaCompraLojaVirtualDTO.setValorDesconto(vendaCompraLojaVirtual.getValorDesconto());
+			vendaCompraLojaVirtualDTO.setValorFrete(vendaCompraLojaVirtual.getValorFrete());
+			vendaCompraLojaVirtualDTO.setPessoa(vendaCompraLojaVirtual.getPessoa());
+			vendaCompraLojaVirtualDTO.setEnderecoEntrega(vendaCompraLojaVirtual.getEnderecoEntrega());
+			vendaCompraLojaVirtualDTO.setEnderecoCobranca(vendaCompraLojaVirtual.getEnderecoCobranca());
+			
+			for (ItemVendaLoja itemVendaLoja : vendaCompraLojaVirtual.getItensVendaLoja()) {
+				ItemVendaLojaDTO itemVendaLojaDTO = new ItemVendaLojaDTO();
+				itemVendaLojaDTO.setQuantidade(itemVendaLoja.getQuantidade());
+				itemVendaLojaDTO.setProduto(itemVendaLoja.getProduto());
+				
+				vendaCompraLojaVirtualDTO.getItensVendaLojaDTO().add(itemVendaLojaDTO);
+			}
+			
+			vendasCompraLojaVirtualDTO.add(vendaCompraLojaVirtualDTO);
+		}
+
+		return new ResponseEntity<List<VendaCompraLojaVirtualDTO>>(vendasCompraLojaVirtualDTO, 
+				HttpStatus.OK);
+	}
+	
 }

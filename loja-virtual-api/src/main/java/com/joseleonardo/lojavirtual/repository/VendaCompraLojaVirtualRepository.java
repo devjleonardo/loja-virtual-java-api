@@ -23,4 +23,26 @@ public interface VendaCompraLojaVirtualRepository
 		 + "WHERE iv.vendaCompraLojaVirtual.excluido = false AND iv.produto.id = ?1")
 	List<VendaCompraLojaVirtual> buscarVendaCompraLojaVirtualPorProdutoId(Long produtoId);
 	
+	@Query("SELECT DISTINCT(iv.vendaCompraLojaVirtual) FROM ItemVendaLoja iv "
+	     + "WHERE iv.vendaCompraLojaVirtual.excluido = false "
+	     + "AND UPPER(TRIM(iv.produto.nome)) LIKE %?1%")
+	List<VendaCompraLojaVirtual> buscarVendaCompraLojaVirtualPorNomeDoProduto(String nomeDoProduto);
+
+	@Query("SELECT DISTINCT(iv.vendaCompraLojaVirtual) FROM ItemVendaLoja iv "
+		     + "WHERE iv.vendaCompraLojaVirtual.excluido = false "
+		     + "AND UPPER(TRIM(iv.vendaCompraLojaVirtual.pessoa.nome)) LIKE %?1%")
+	List<VendaCompraLojaVirtual> buscarVendaCompraLojaVirtualPorNomeDoCliente(String nomeDoCliente);
+	
+	@Query("SELECT DISTINCT(iv.vendaCompraLojaVirtual) FROM ItemVendaLoja iv "
+		     + "WHERE iv.vendaCompraLojaVirtual.excluido = false "
+		     + "AND UPPER(TRIM(iv.vendaCompraLojaVirtual.enderecoEntrega.logradouro)) LIKE %?1%")
+	List<VendaCompraLojaVirtual> buscarVendaCompraLojaVirtualPorEnderecoDeEntrega(
+			String enderecoDeEntrega);
+
+	@Query("SELECT DISTINCT(iv.vendaCompraLojaVirtual) FROM ItemVendaLoja iv "
+		     + "WHERE iv.vendaCompraLojaVirtual.excluido = false "
+		     + "AND UPPER(TRIM(iv.vendaCompraLojaVirtual.enderecoCobranca.logradouro)) LIKE %?1%")
+	List<VendaCompraLojaVirtual> buscarVendaCompraLojaVirtualPorEnderecoDeCobranca(
+			String enderecoDeCobranca);
+	
 }

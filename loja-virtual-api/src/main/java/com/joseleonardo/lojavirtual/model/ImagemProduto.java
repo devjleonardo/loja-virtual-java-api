@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -69,6 +70,7 @@ public class ImagemProduto implements Serializable {
 		this.imagemMiniatura = imagemMiniatura;
 	}
 
+	@JsonIgnore
 	public Produto getProduto() {
 		return produto;
 	}
@@ -77,6 +79,7 @@ public class ImagemProduto implements Serializable {
 		this.produto = produto;
 	}
 	
+	@JsonIgnore
 	public PessoaJuridica getEmpresa() {
 		return empresa;
 	}
