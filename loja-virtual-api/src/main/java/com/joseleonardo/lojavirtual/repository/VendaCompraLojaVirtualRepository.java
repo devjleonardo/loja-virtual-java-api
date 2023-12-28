@@ -31,8 +31,25 @@ public interface VendaCompraLojaVirtualRepository
 
 	@Query("SELECT DISTINCT(iv.vendaCompraLojaVirtual) FROM ItemVendaLoja iv "
 		     + "WHERE iv.vendaCompraLojaVirtual.excluido = false "
+		     + "AND iv.vendaCompraLojaVirtual.pessoa.id = %?1%")
+	List<VendaCompraLojaVirtual> buscarVendaCompraLojaVirtualPorClienteId(Long clienteId);
+	
+	@Query("SELECT DISTINCT(iv.vendaCompraLojaVirtual) FROM ItemVendaLoja iv "
+		     + "WHERE iv.vendaCompraLojaVirtual.excluido = false "
 		     + "AND UPPER(TRIM(iv.vendaCompraLojaVirtual.pessoa.nome)) LIKE %?1%")
 	List<VendaCompraLojaVirtual> buscarVendaCompraLojaVirtualPorNomeDoCliente(String nomeDoCliente);
+	
+	@Query("SELECT DISTINCT(iv.vendaCompraLojaVirtual) FROM ItemVendaLoja iv "
+		     + "WHERE iv.vendaCompraLojaVirtual.excluido = false "
+		     + "AND iv.vendaCompraLojaVirtual.pessoa.cpf = %?1%")
+	List<VendaCompraLojaVirtual> buscarVendaCompraLojaVirtualPorCpfDoCliente(String cpfDoCliente);
+	
+	@Query("SELECT DISTINCT(iv.vendaCompraLojaVirtual) FROM ItemVendaLoja iv "
+		     + "WHERE iv.vendaCompraLojaVirtual.excluido = false "
+		     + "AND UPPER(TRIM(iv.vendaCompraLojaVirtual.pessoa.nome)) LIKE %?1% "
+		     + "AND iv.vendaCompraLojaVirtual.pessoa.cpf = %?2%")
+	List<VendaCompraLojaVirtual> buscarVendaCompraLojaVirtualPorNomeECpfDoCliente(
+			String nomeDoCliente, String cpfDoCliente);
 	
 	@Query("SELECT DISTINCT(iv.vendaCompraLojaVirtual) FROM ItemVendaLoja iv "
 		     + "WHERE iv.vendaCompraLojaVirtual.excluido = false "
