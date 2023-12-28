@@ -1,5 +1,6 @@
 package com.joseleonardo.lojavirtual.repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,5 +45,11 @@ public interface VendaCompraLojaVirtualRepository
 		     + "AND UPPER(TRIM(iv.vendaCompraLojaVirtual.enderecoCobranca.logradouro)) LIKE %?1%")
 	List<VendaCompraLojaVirtual> buscarVendaCompraLojaVirtualPorEnderecoDeCobranca(
 			String enderecoDeCobranca);
+
+	@Query("SELECT DISTINCT(iv.vendaCompraLojaVirtual) FROM ItemVendaLoja iv "
+		     + "WHERE iv.vendaCompraLojaVirtual.excluido = false "
+		     + "AND iv.vendaCompraLojaVirtual.dataVenda >= ?1 "
+		     + "AND iv.vendaCompraLojaVirtual.dataVenda <= ?2")
+	List<VendaCompraLojaVirtual> buscarVendaCompraLojaVirtualPorIntervaloDeDatasDaVenda(Date data1, Date data2);
 	
 }

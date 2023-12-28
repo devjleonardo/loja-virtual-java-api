@@ -10,6 +10,7 @@ public class VendaCompraLojaVirtualService {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
+	/* SQL puro */
 	public void deletarVendaCompraLojaVirtualPorId(Long id) {
 		String sql = 
 		           "BEGIN; "
@@ -24,6 +25,7 @@ public class VendaCompraLojaVirtualService {
 		jdbcTemplate.execute(sql);
 	} 
 	
+	/* SQL puro */
 	public void desativarVendaCompraLojaVirtualPorIdAtravesDaExclusaoLogica(Long id) {
 		String sql =
 				   "BEGIN; "
@@ -33,6 +35,7 @@ public class VendaCompraLojaVirtualService {
 		jdbcTemplate.execute(sql);
 	}
 	
+	/* SQL puro */
 	public void ativarVendaCompraLojaVirtualPorIdDesativadaAtravesDaExclusaoLogica(Long id) {
 		String sql =
 				   "BEGIN; "

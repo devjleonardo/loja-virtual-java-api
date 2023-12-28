@@ -1,6 +1,9 @@
 package com.joseleonardo.lojavirtual.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -270,6 +273,50 @@ public class VendaCompraLojaVirtualController {
 			vendasCompraLojaVirtual = vendaCompraLojaVirtualRepository
 			        .buscarVendaCompraLojaVirtualPorEnderecoDeCobranca(valor.trim().toUpperCase());
 		}
+		
+		List<VendaCompraLojaVirtualDTO> vendasCompraLojaVirtualDTO = new ArrayList<>();
+		
+		for (VendaCompraLojaVirtual vendaCompraLojaVirtual : vendasCompraLojaVirtual) {
+			VendaCompraLojaVirtualDTO vendaCompraLojaVirtualDTO = new VendaCompraLojaVirtualDTO();
+			vendaCompraLojaVirtualDTO.setId(vendaCompraLojaVirtual.getId());
+			vendaCompraLojaVirtualDTO.setValorTotal(vendaCompraLojaVirtual.getValorTotal());
+			vendaCompraLojaVirtualDTO.setValorDesconto(vendaCompraLojaVirtual.getValorDesconto());
+			vendaCompraLojaVirtualDTO.setValorFrete(vendaCompraLojaVirtual.getValorFrete());
+			vendaCompraLojaVirtualDTO.setPessoa(vendaCompraLojaVirtual.getPessoa());
+			vendaCompraLojaVirtualDTO.setEnderecoEntrega(vendaCompraLojaVirtual.getEnderecoEntrega());
+			vendaCompraLojaVirtualDTO.setEnderecoCobranca(vendaCompraLojaVirtual.getEnderecoCobranca());
+			
+			for (ItemVendaLoja itemVendaLoja : vendaCompraLojaVirtual.getItensVendaLoja()) {
+				ItemVendaLojaDTO itemVendaLojaDTO = new ItemVendaLojaDTO();
+				itemVendaLojaDTO.setQuantidade(itemVendaLoja.getQuantidade());
+				itemVendaLojaDTO.setProduto(itemVendaLoja.getProduto());
+				
+				vendaCompraLojaVirtualDTO.getItensVendaLojaDTO().add(itemVendaLojaDTO);
+			}
+			
+			vendasCompraLojaVirtualDTO.add(vendaCompraLojaVirtualDTO);
+		}
+
+		return new ResponseEntity<List<VendaCompraLojaVirtualDTO>>(vendasCompraLojaVirtualDTO, 
+				HttpStatus.OK);
+	}
+	
+	
+	@ResponseBody
+	@GetMapping(value = "**/buscarVendaCompraLojaVirtualPorIntervaloDeDatasDaVenda/{data1}/{data2}")
+	public ResponseEntity<List<VendaCompraLojaVirtualDTO>> buscarVendaCompraLojaVirtualPorIntervaloDeDatasDaVenda(
+			@PathVariable("data1") String data1, 
+			@PathVariable("data2") String data2) throws LojaVirtualException, ParseException {
+		List<VendaCompraLojaVirtual> vendasCompraLojaVirtual = new ArrayList<>();
+		
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		
+		Date data1Formatada = simpleDateFormat.parse(data1);
+		Date data2Formatada = simpleDateFormat.parse(data2);
+		
+		
+		vendasCompraLojaVirtual = vendaCompraLojaVirtualRepository
+		        .buscarVendaCompraLojaVirtualPorIntervaloDeDatasDaVenda(data1Formatada, data2Formatada);
 		
 		List<VendaCompraLojaVirtualDTO> vendasCompraLojaVirtualDTO = new ArrayList<>();
 		
