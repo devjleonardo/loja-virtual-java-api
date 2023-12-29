@@ -27,7 +27,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "venda_compra_loja_virtual")
@@ -93,7 +93,6 @@ public class VendaCompraLojaVirtual implements Serializable {
 	@JoinColumn(name = "endereco_cobranca_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "fk_endereco_cobranca"))
 	private Endereco enderecoCobranca;
 
-	@JsonIgnoreProperties(allowGetters = true)
 	@NotNull(message = "A nota fiscal da venda deve ser informado")
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "nota_fiscal_venda_id", nullable = true, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "fk_nota_fiscal_venda"))
@@ -211,6 +210,7 @@ public class VendaCompraLojaVirtual implements Serializable {
 		this.enderecoCobranca = enderecoCobranca;
 	}
 
+	@JsonIgnore
 	public NotaFiscalVenda getNotaFiscalVenda() {
 		return notaFiscalVenda;
 	}

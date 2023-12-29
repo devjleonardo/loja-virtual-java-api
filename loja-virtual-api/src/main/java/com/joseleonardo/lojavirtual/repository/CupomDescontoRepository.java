@@ -7,13 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.joseleonardo.lojavirtual.model.FormaPagamento;
+import com.joseleonardo.lojavirtual.model.CupomDesconto;
 
 @Repository
 @Transactional
-public interface FormaPagamentoRepository extends JpaRepository<FormaPagamento, Long> {
+public interface CupomDescontoRepository extends JpaRepository<CupomDesconto, Long> {
 
-	@Query("SELECT fp FROM FormaPagamento fp WHERE fp.empresa.id = ?1")
-	List<FormaPagamento> buscarFormaPagamentoPorEmpresaId(Long empresaId);
+	@Query("SELECT cd FROM CupomDesconto cd WHERE cd.empresa.id = ?1")
+	List<CupomDesconto> buscarCupomDescontoPorEmpresaId(Long empresaId);
 	
 }

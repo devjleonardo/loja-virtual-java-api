@@ -30,6 +30,7 @@ import com.joseleonardo.lojavirtual.model.dto.ItemVendaLojaDTO;
 import com.joseleonardo.lojavirtual.model.dto.VendaCompraLojaVirtualDTO;
 import com.joseleonardo.lojavirtual.repository.EnderecoRepository;
 import com.joseleonardo.lojavirtual.repository.NotaFiscalVendaRepository;
+import com.joseleonardo.lojavirtual.repository.PessoaFisicaRepository;
 import com.joseleonardo.lojavirtual.repository.ProdutoRepository;
 import com.joseleonardo.lojavirtual.repository.StatusRastreioRepository;
 import com.joseleonardo.lojavirtual.repository.VendaCompraLojaVirtualRepository;
@@ -58,6 +59,9 @@ public class VendaCompraLojaVirtualController {
 	
 	@Autowired
 	private ProdutoRepository produtoRepository;
+	
+	@Autowired
+	private PessoaFisicaRepository pessoaFisicaRepository;
 	
 	@ResponseBody
 	@PostMapping(value = "**/salvarVendaCompraLojaVirtual")
@@ -301,7 +305,6 @@ public class VendaCompraLojaVirtualController {
 				HttpStatus.OK);
 	}
 	
-	
 	@ResponseBody
 	@GetMapping(value = "**/buscarVendaCompraLojaVirtualPorIntervaloDeDatasDaVenda/{data1}/{data2}")
 	public ResponseEntity<List<VendaCompraLojaVirtualDTO>> buscarVendaCompraLojaVirtualPorIntervaloDeDatasDaVenda(
@@ -317,6 +320,45 @@ public class VendaCompraLojaVirtualController {
 		
 		vendasCompraLojaVirtual = vendaCompraLojaVirtualRepository
 		        .buscarVendaCompraLojaVirtualPorIntervaloDeDatasDaVenda(data1Formatada, data2Formatada);
+		
+		List<VendaCompraLojaVirtualDTO> vendasCompraLojaVirtualDTO = new ArrayList<>();
+		
+		for (VendaCompraLojaVirtual vendaCompraLojaVirtual : vendasCompraLojaVirtual) {
+			VendaCompraLojaVirtualDTO vendaCompraLojaVirtualDTO = new VendaCompraLojaVirtualDTO();
+			vendaCompraLojaVirtualDTO.setId(vendaCompraLojaVirtual.getId());
+			vendaCompraLojaVirtualDTO.setValorTotal(vendaCompraLojaVirtual.getValorTotal());
+			vendaCompraLojaVirtualDTO.setValorDesconto(vendaCompraLojaVirtual.getValorDesconto());
+			vendaCompraLojaVirtualDTO.setValorFrete(vendaCompraLojaVirtual.getValorFrete());
+			vendaCompraLojaVirtualDTO.setPessoa(vendaCompraLojaVirtual.getPessoa());
+			vendaCompraLojaVirtualDTO.setEnderecoEntrega(vendaCompraLojaVirtual.getEnderecoEntrega());
+			vendaCompraLojaVirtualDTO.setEnderecoCobranca(vendaCompraLojaVirtual.getEnderecoCobranca());
+			
+			for (ItemVendaLoja itemVendaLoja : vendaCompraLojaVirtual.getItensVendaLoja()) {
+				ItemVendaLojaDTO itemVendaLojaDTO = new ItemVendaLojaDTO();
+				itemVendaLojaDTO.setQuantidade(itemVendaLoja.getQuantidade());
+				itemVendaLojaDTO.setProduto(itemVendaLoja.getProduto());
+				
+				vendaCompraLojaVirtualDTO.getItensVendaLojaDTO().add(itemVendaLojaDTO);
+			}
+			
+			vendasCompraLojaVirtualDTO.add(vendaCompraLojaVirtualDTO);
+		}
+
+		return new ResponseEntity<List<VendaCompraLojaVirtualDTO>>(vendasCompraLojaVirtualDTO, 
+				HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@GetMapping(value = "**/buscarVendaCompraLojaVirtualPorClienteId/{clienteId}")
+	public ResponseEntity<List<VendaCompraLojaVirtualDTO>> buscarVendaCompraLojaVirtualPorClienteId(
+			@PathVariable("clienteId") Long clienteId) throws LojaVirtualException {
+		if (!pessoaFisicaRepository.findById(clienteId).isPresent()) {
+			throw new LojaVirtualException("Não econtrou nenhum cliente com o código: " 
+		            + clienteId);
+		}
+		
+		List<VendaCompraLojaVirtual> vendasCompraLojaVirtual = vendaCompraLojaVirtualRepository
+				.buscarVendaCompraLojaVirtualPorClienteId(clienteId);
 		
 		List<VendaCompraLojaVirtualDTO> vendasCompraLojaVirtualDTO = new ArrayList<>();
 		

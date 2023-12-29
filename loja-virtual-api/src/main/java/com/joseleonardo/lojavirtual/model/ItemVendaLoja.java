@@ -15,6 +15,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "item_venda_loja")
 @SequenceGenerator(name = "seq_item_venda_loja", sequenceName = "seq_item_venda_loja", allocationSize = 1, initialValue = 1)
@@ -65,6 +67,7 @@ public class ItemVendaLoja implements Serializable {
 		this.produto = produto;
 	}
 
+	@JsonIgnore
 	public VendaCompraLojaVirtual getVendaCompraLojaVirtual() {
 		return vendaCompraLojaVirtual;
 	}
