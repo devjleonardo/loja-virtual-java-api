@@ -18,6 +18,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "cupom_desconto")
@@ -30,6 +32,8 @@ public class CupomDesconto implements Serializable {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_cupom_desconto")
 	private Long id;
 
+	@NotBlank(message = "O código/descrição do cupom de desconto deve ser informado")
+	@NotNull(message = "O código/descrição do cupom de desconto deve ser informado")
 	@Column(nullable = false)
 	private String codigoDescricao;
 
@@ -37,6 +41,7 @@ public class CupomDesconto implements Serializable {
 
 	private BigDecimal valorEmPorcentagem;
 
+	@NotNull(message = "A data de validade do cupom de desconto deve ser informada")
 	@Column(nullable = false)
 	@Temporal(TemporalType.DATE)
 	private Date dataValidade;
