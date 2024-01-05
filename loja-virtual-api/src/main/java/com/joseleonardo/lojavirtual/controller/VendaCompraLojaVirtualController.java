@@ -33,6 +33,7 @@ import com.joseleonardo.lojavirtual.model.Produto;
 import com.joseleonardo.lojavirtual.model.StatusRastreio;
 import com.joseleonardo.lojavirtual.model.VendaCompraLojaVirtual;
 import com.joseleonardo.lojavirtual.model.dto.ItemVendaLojaDTO;
+import com.joseleonardo.lojavirtual.model.dto.RelatorioVendaCompraLojaVirtualPorStatusDTO;
 import com.joseleonardo.lojavirtual.model.dto.VendaCompraLojaVirtualDTO;
 import com.joseleonardo.lojavirtual.repository.ContaReceberRepository;
 import com.joseleonardo.lojavirtual.repository.EnderecoRepository;
@@ -449,6 +450,19 @@ public class VendaCompraLojaVirtualController {
 
 		return new ResponseEntity<List<VendaCompraLojaVirtualDTO>>(vendasCompraLojaVirtualDTO, 
 				HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@PostMapping(value = "**/relatorioVendaCompraLojaVirtualPorStatus")
+	public ResponseEntity<List<RelatorioVendaCompraLojaVirtualPorStatusDTO>> relatorioVendaCompraLojaVirtualPorStatus(
+			@Valid @RequestBody RelatorioVendaCompraLojaVirtualPorStatusDTO relatorioVendaCompraLojaVirtualPorStatusDTO) {
+		List<RelatorioVendaCompraLojaVirtualPorStatusDTO> retorno = new ArrayList<>();
+		
+		retorno = vendaCompraLojaVirtualService
+				      .gerarRelatorioVendaCompraLojaVirtualPorStatus(relatorioVendaCompraLojaVirtualPorStatusDTO);
+		
+		return new ResponseEntity<List<RelatorioVendaCompraLojaVirtualPorStatusDTO>>(
+				retorno, HttpStatus.OK);
 	}
 	
 }

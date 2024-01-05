@@ -11,6 +11,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -26,6 +28,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+
+import com.joseleonardo.lojavirtual.enums.StatusVendaCompraLojaVirtual;
 
 @Entity
 @Table(name = "venda_compra_loja_virtual")
@@ -66,6 +70,9 @@ public class VendaCompraLojaVirtual implements Serializable {
 	private Date dataEntrega;
 	
 	private Boolean excluido = Boolean.FALSE;
+	
+	@Enumerated(EnumType.STRING)
+	private StatusVendaCompraLojaVirtual statusVendaCompraLojaVirtual;
 
 	@NotNull(message = "A pessoa da venda deve ser informada")
 	@ManyToOne(targetEntity = PessoaFisica.class, cascade = CascadeType.ALL)
@@ -166,6 +173,14 @@ public class VendaCompraLojaVirtual implements Serializable {
 
 	public void setExcluido(Boolean excluido) {
 		this.excluido = excluido;
+	}
+	
+	public StatusVendaCompraLojaVirtual getStatusVendaCompraLojaVirtual() {
+		return statusVendaCompraLojaVirtual;
+	}
+	
+	public void setStatusVendaCompraLojaVirtual(StatusVendaCompraLojaVirtual statusVendaCompraLojaVirtual) {
+		this.statusVendaCompraLojaVirtual = statusVendaCompraLojaVirtual;
 	}
 
 	public PessoaFisica getPessoa() {
