@@ -16,6 +16,17 @@ public class NotaFiscalCompraService {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
+	/**
+	 * Título: Histórico de compras de produtos para a loja virutal.
+	 * 
+	 * Este relatório permite saber os produtos comprados para serem vendiados pela loja virtual,
+	 * todos os produtos tem relção com a nota fiscal de compra.
+	 * 
+	 * @param relatorioNotaFiscalCompraProdutosCompradosDTO RelatorioNotaFiscalCompraProdutosCompradosDTO
+	 * @param dataInicial e dataFinal são parâmetros obrigatórios
+	 * @return List<RelatorioNotaFiscalCompraProdutosCompradosDTO>
+	 * @author José Leonardo
+	 */
 	public List<RelatorioNotaFiscalCompraProdutosCompradosDTO> gerarRelatorioProdutosComprados(
 			RelatorioNotaFiscalCompraProdutosCompradosDTO relatorioNotaFiscalCompraProdutosCompradosDTO) {
 		List<RelatorioNotaFiscalCompraProdutosCompradosDTO> retorno = new ArrayList<>();

@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -25,8 +26,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.joseleonardo.lojavirtual.exception.LojaVirtualException;
 import com.joseleonardo.lojavirtual.model.Produto;
+import com.joseleonardo.lojavirtual.model.dto.RelatorioAlertaEstoqueBaixoDeProdutoDTO;
 import com.joseleonardo.lojavirtual.repository.ProdutoRepository;
 import com.joseleonardo.lojavirtual.service.EnvioEmailService;
+import com.joseleonardo.lojavirtual.service.ProdutoService;
 
 @RestController
 public class ProdutoController {
@@ -36,6 +39,9 @@ public class ProdutoController {
 	
 	@Autowired
 	private EnvioEmailService envioEmailService;
+	
+	@Autowired
+	private ProdutoService produtoService;
 	
 	@ResponseBody
 	@PostMapping(value = "**/salvarProduto")
@@ -193,6 +199,19 @@ public class ProdutoController {
 		List<Produto> produtos = produtoRepository.buscarProdutoPorNome(nome.trim().toUpperCase());
 		
 		return new ResponseEntity<List<Produto>>(produtos, HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@PostMapping(value = "**/relatorioAlertaEstoqueBaixoDeProduto")
+	public ResponseEntity<List<RelatorioAlertaEstoqueBaixoDeProdutoDTO>> relatorioAlertaEstoqueBaixoDeProduto(
+			@Valid @RequestBody RelatorioAlertaEstoqueBaixoDeProdutoDTO relatorioAlertaEstoqueBaixoDeProdutoDTO) {
+		List<RelatorioAlertaEstoqueBaixoDeProdutoDTO> retorno = new ArrayList<>();
+		
+		retorno = produtoService
+				      .gerarRelatorioAlertaEstoqueBaixoDeProduto(relatorioAlertaEstoqueBaixoDeProdutoDTO);
+		
+		return new ResponseEntity<List<RelatorioAlertaEstoqueBaixoDeProdutoDTO>>(
+				retorno, HttpStatus.OK);
 	}
 	
 }
