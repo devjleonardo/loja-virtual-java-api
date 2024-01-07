@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.mail.MessagingException;
@@ -22,8 +23,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joseleonardo.lojavirtual.enums.StatusContaReceber;
 import com.joseleonardo.lojavirtual.exception.LojaVirtualException;
+import com.joseleonardo.lojavirtual.integracao.ApiTokenIntegracao;
 import com.joseleonardo.lojavirtual.model.ContaReceber;
 import com.joseleonardo.lojavirtual.model.Endereco;
 import com.joseleonardo.lojavirtual.model.ItemVendaLoja;
@@ -35,6 +39,8 @@ import com.joseleonardo.lojavirtual.model.VendaCompraLojaVirtual;
 import com.joseleonardo.lojavirtual.model.dto.ItemVendaLojaDTO;
 import com.joseleonardo.lojavirtual.model.dto.RelatorioVendaCompraLojaVirtualPorStatusDTO;
 import com.joseleonardo.lojavirtual.model.dto.VendaCompraLojaVirtualDTO;
+import com.joseleonardo.lojavirtual.model.dto.frete.EmpresaTransporteDTO;
+import com.joseleonardo.lojavirtual.model.dto.frete.calculo.CalculoFreteDTO;
 import com.joseleonardo.lojavirtual.repository.ContaReceberRepository;
 import com.joseleonardo.lojavirtual.repository.EnderecoRepository;
 import com.joseleonardo.lojavirtual.repository.NotaFiscalVendaRepository;
@@ -45,6 +51,8 @@ import com.joseleonardo.lojavirtual.repository.StatusRastreioRepository;
 import com.joseleonardo.lojavirtual.repository.VendaCompraLojaVirtualRepository;
 import com.joseleonardo.lojavirtual.service.EnvioEmailService;
 import com.joseleonardo.lojavirtual.service.VendaCompraLojaVirtualService;
+
+import okhttp3.OkHttpClient;
 
 @RestController
 public class VendaCompraLojaVirtualController {
@@ -450,6 +458,64 @@ public class VendaCompraLojaVirtualController {
 
 		return new ResponseEntity<List<VendaCompraLojaVirtualDTO>>(vendasCompraLojaVirtualDTO, 
 				HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@PostMapping(value = "**/calculoDeFreteLojaVirtual")
+	public ResponseEntity<List<EmpresaTransporteDTO>> calculoDeFreteLojaVirtual(
+			@RequestBody @Valid CalculoFreteDTO calculoFreteDTO) throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
+		String json = objectMapper.writeValueAsString(calculoFreteDTO);
+		
+		OkHttpClient client = new OkHttpClient();
+
+		okhttp3.MediaType mediaType = okhttp3.MediaType.parse("application/json");
+		okhttp3.RequestBody body = okhttp3.RequestBody.create(mediaType, json);
+		okhttp3.Request request = new okhttp3.Request.Builder()
+		  .url(ApiTokenIntegracao.URL_MELHOR_ENVIO_SANDABOX + "/api/v2/me/shipment/calculate")
+		  .post(body)
+		  .addHeader("Accept", "application/json")
+		  .addHeader("Content-Type", "application/json")
+		  .addHeader("Authorization", "Bearer " + ApiTokenIntegracao.TOKEN_MELHOR_ENVIO_SANDBOX)
+		  .addHeader("User-Agent", "jlcb.lojavirtual@gmail.com")
+		  .build();
+
+		okhttp3.Response response = client.newCall(request).execute();
+		
+		JsonNode retornoDaApi = new ObjectMapper().readTree(response.body().string());
+		
+		Iterator<JsonNode> camposDaApi = retornoDaApi.iterator();
+		
+		List<EmpresaTransporteDTO> empresasTransporte = new ArrayList<>();
+		
+		while (camposDaApi.hasNext()) {
+			JsonNode campoApi = camposDaApi.next();
+			
+			EmpresaTransporteDTO empresaTransporte = new EmpresaTransporteDTO();
+			
+			if (campoApi.get("id") != null) {
+				empresaTransporte.setId(campoApi.get("id").asText());
+			}
+			
+			if (campoApi.get("name") != null) {
+				empresaTransporte.setNome(campoApi.get("name").asText());
+			}
+			
+			if (campoApi.get("price") != null) {
+				empresaTransporte.setValor(campoApi.get("price").asText());
+			}
+			
+			if (campoApi.get("company") != null) {
+				empresaTransporte.setEmpresa(campoApi.get("company").get("name").asText());
+				empresaTransporte.setFoto(campoApi.get("company").get("picture").asText());
+			}
+			
+			if(empresaTransporte.dadosOk()) {
+				empresasTransporte.add(empresaTransporte);
+			}
+		}
+		
+		return new ResponseEntity<List<EmpresaTransporteDTO>>(empresasTransporte, HttpStatus.OK);
 	}
 	
 	@ResponseBody
