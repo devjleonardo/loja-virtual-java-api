@@ -1,8 +1,8 @@
-package com.joseleonardo.lojavirtual.model.dto.frete.calculo;
+package com.joseleonardo.lojavirtual.model.dto.melhor.envio.cotacao;
 
 import java.io.Serializable;
 
-public class FromDTO implements Serializable {
+public class ToDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

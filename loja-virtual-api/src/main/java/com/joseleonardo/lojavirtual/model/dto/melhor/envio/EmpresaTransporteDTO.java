@@ -1,4 +1,4 @@
-package com.joseleonardo.lojavirtual.model.dto.frete;
+package com.joseleonardo.lojavirtual.model.dto.melhor.envio;
 
 import java.io.Serializable;
 

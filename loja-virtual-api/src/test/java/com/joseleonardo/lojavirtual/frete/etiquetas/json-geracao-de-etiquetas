@@ -1,0 +1,15 @@
+/* JSON que envia os dados para geração de etiquetas */
+{
+   "orders":[
+      "9b09a9fa-4d15-4cb6-a533-91dace560861"
+   ]
+}
+
+
+/* JSON de retorno da ação de geração de etiquetas */
+{
+   "9b09a9fa-4d15-4cb6-a533-91dace560861":{
+      "status":true,
+      "message":"Envio gerado com sucesso"
+   }
+}

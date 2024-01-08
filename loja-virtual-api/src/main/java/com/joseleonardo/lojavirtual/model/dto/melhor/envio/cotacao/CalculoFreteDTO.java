@@ -1,4 +1,4 @@
-package com.joseleonardo.lojavirtual.model.dto.frete.calculo;
+package com.joseleonardo.lojavirtual.model.dto.melhor.envio.cotacao;
 
 import java.io.Serializable;
 import java.util.ArrayList;

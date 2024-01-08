@@ -73,6 +73,13 @@ public class VendaCompraLojaVirtual implements Serializable {
 	
 	@Enumerated(EnumType.STRING)
 	private StatusVendaCompraLojaVirtual statusVendaCompraLojaVirtual;
+	
+	private String codigoFrete;
+	
+	private String urlImpressaoEtiquetaFrete;
+	
+	/* Frete que foi escolhido cliente no momento da compra */
+	private String servicoTransportadora;
 
 	@NotNull(message = "A pessoa da venda deve ser informada")
 	@ManyToOne(targetEntity = PessoaFisica.class, cascade = CascadeType.ALL)
@@ -181,6 +188,30 @@ public class VendaCompraLojaVirtual implements Serializable {
 	
 	public void setStatusVendaCompraLojaVirtual(StatusVendaCompraLojaVirtual statusVendaCompraLojaVirtual) {
 		this.statusVendaCompraLojaVirtual = statusVendaCompraLojaVirtual;
+	}
+	
+	public String getCodigoFrete() {
+		return codigoFrete;
+	}
+	
+	public void setCodigoFrete(String codigoFrete) {
+		this.codigoFrete = codigoFrete;
+	}
+	
+	public String getUrlImpressaoEtiquetaFrete() {
+		return urlImpressaoEtiquetaFrete;
+	}
+	
+	public void setUrlImpressaoEtiquetaFrete(String urlImpressaoEtiquetaFrete) {
+		this.urlImpressaoEtiquetaFrete = urlImpressaoEtiquetaFrete;
+	}
+	
+	public String getServicoTransportadora() {
+		return servicoTransportadora;
+	}
+	
+	public void setServicoTransportadora(String servicoTransportadora) {
+		this.servicoTransportadora = servicoTransportadora;
 	}
 
 	public PessoaFisica getPessoa() {

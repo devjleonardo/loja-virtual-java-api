@@ -1,0 +1,189 @@
+/* JSON que envia os dados para compra de fretes */
+{
+   "orders":[
+      "9b09a9fa-4d15-4cb6-a533-91dace560861"
+   ]
+}
+
+
+/* JSON de retorno da ação de compra de fretes */
+{
+   "purchase":{
+      "id":"9b09adc5-7f2d-4a39-b36d-6dcc125a65d9",
+      "protocol":"PUR-20240135714",
+      "total":43.66,
+      "discount":10.55,
+      "status":"paid",
+      "paid_at":"2024-01-07 20:18:44",
+      "canceled_at":null,
+      "created_at":"2024-01-07 20:18:44",
+      "updated_at":"2024-01-07 20:18:44",
+      "payment":null,
+      "transactions":[
+         {
+            "id":"9b09adc5-85bc-42de-8bdc-3099352823e9",
+            "protocol":"TRN-20240175410",
+            "value":43.66,
+            "type":"debit",
+            "status":"authorized",
+            "description":"Pagamento de envios (PUR-20240135714)",
+            "authorized_at":"2024-01-07 20:18:44",
+            "unauthorized_at":null,
+            "reserved_at":null,
+            "canceled_at":null,
+            "created_at":"2024-01-07 20:18:44",
+            "description_internal":null,
+            "reason":{
+               "id":7,
+               "label":"Pagamento de envios",
+               "description":""
+            }
+         }
+      ],
+      "orders":[
+         {
+            "id":"9b09a9fa-4d15-4cb6-a533-91dace560861",
+            "protocol":"ORD-202401198767",
+            "service_id":1,
+            "agency_id":null,
+            "contract":null,
+            "service_code":null,
+            "quote":43.66,
+            "price":43.66,
+            "coupon":null,
+            "discount":10.55,
+            "delivery_min":6,
+            "delivery_max":7,
+            "status":"released",
+            "reminder":null,
+            "insurance_value":1000,
+            "weight":null,
+            "width":null,
+            "height":null,
+            "length":null,
+            "diameter":null,
+            "format":"box",
+            "billed_weight":3.5,
+            "receipt":false,
+            "own_hand":false,
+            "collect":false,
+            "collect_scheduled_at":null,
+            "reverse":0,
+            "non_commercial":false,
+            "authorization_code":null,
+            "tracking":null,
+            "self_tracking":null,
+            "delivery_receipt":null,
+            "additional_info":null,
+            "cte_key":null,
+            "paid_at":"2024-01-07 20:18:44",
+            "generated_at":null,
+            "posted_at":null,
+            "delivered_at":null,
+            "canceled_at":null,
+            "suspended_at":null,
+            "expired_at":null,
+            "created_at":"2024-01-07 20:08:07",
+            "updated_at":"2024-01-07 20:18:44",
+            "parse_pi_at":null,
+            "from":{
+               "name":"Nome do remetente",
+               "phone":"53984470102",
+               "email":"contato@melhorenvio.com.br",
+               "document":"16571478358",
+               "company_document":"89794131000100",
+               "state_register":"123456",
+               "postal_code":"1002001",
+               "address":"Endere\u00e7o do remetente",
+               "location_number":"1",
+               "complement":"Complemento",
+               "district":"Bairro",
+               "city":"S\u00e3o Paulo",
+               "state_abbr":"SP",
+               "country_id":"BR",
+               "latitude":null,
+               "longitude":null,
+               "note":"observa\u00e7\u00e3o",
+               "economic_activity_code":null
+            },
+            "to":{
+               "name":"Nome do destinat\u00e1rio",
+               "phone":"53984470102",
+               "email":"contato@melhorenvio.com.br",
+               "document":"25404918047",
+               "company_document":"07595604000177",
+               "state_register":"123456",
+               "postal_code":"90570020",
+               "address":"Endere\u00e7o do destinat\u00e1rio",
+               "location_number":"2",
+               "complement":"Complemento",
+               "district":"Bairro",
+               "city":"Porto Alegre",
+               "state_abbr":"RS",
+               "country_id":"BR",
+               "latitude":null,
+               "longitude":null,
+               "note":"observa\u00e7\u00e3o",
+               "economic_activity_code":null
+            },
+            "service":{
+               "id":1,
+               "name":"PAC",
+               "status":"available",
+               "type":"normal",
+               "range":"interstate",
+               "restrictions":"{\"insurance_value\":{\"min\":0,\"max\":3000,\"max_dec\":3000},\"formats\":{\"box\":{\"weight\":{\"min\":0,\"max\":30},\"width\":{\"min\":11,\"max\":100},\"height\":{\"min\":2,\"max\":100},\"length\":{\"min\":16,\"max\":100},\"sum\":200},\"roll\":{\"weight\":{\"min\":0,\"max\":30},\"diameter\":{\"min\":5,\"max\":91},\"length\":{\"min\":18,\"max\":100},\"sum\":200},\"letter\":{\"weight\":{\"min\":0,\"max\":0.5},\"width\":{\"min\":11,\"max\":60},\"length\":{\"min\":16,\"max\":60}}}}",
+               "requirements":"[\"names\",\"addresses\",\"documents\"]",
+               "optionals":"[\"AR\",\"MP\",\"VD\"]",
+               "company":{
+                  "id":1,
+                  "name":"Correios",
+                  "has_grouped_volumes":0,
+                  "status":"available",
+                  "picture":"\/images\/shipping-companies\/correios.png",
+                  "tracking_link":"https:\/\/www.melhorrastreio.com.br\/rastreio\/",
+                  "use_own_contract":false,
+                  "batch_size":1
+               }
+            },
+            "agency":null,
+            "invoice":{
+               "model":"55",
+               "number":"9248",
+               "serie":"1",
+               "key":"31190307586261000184550010000092481404848162",
+               "value":null,
+               "cfop":null,
+               "issued_at":"2019-03-01 00:00:00",
+               "uploaded_at":null,
+               "to_document":null
+            },
+            "tags":[
+               {
+                  "tag":"Identifica\u00e7\u00e3o do pedido na plataforma, exemplo: 1000007",
+                  "url":null
+               }
+            ],
+            "products":[
+               {
+                  "name":"Papel adesivo para etiquetas 1",
+                  "quantity":3,
+                  "unitary_value":100,
+                  "weight":null
+               },
+               {
+                  "name":"Papel adesivo para etiquetas 2",
+                  "quantity":1,
+                  "unitary_value":700,
+                  "weight":null
+               }
+            ]
+         }
+      ]
+   },
+   "digitable":null,
+   "redirect":null,
+   "message":null,
+   "token":null,
+   "payment_id":null
+}

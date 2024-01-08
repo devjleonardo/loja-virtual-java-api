@@ -15,7 +15,7 @@ import com.joseleonardo.lojavirtual.model.VendaCompraLojaVirtual;
 @Transactional
 public interface VendaCompraLojaVirtualRepository 
         extends JpaRepository<VendaCompraLojaVirtual, Long> {
-
+	
 	@Query("SELECT vclv FROM VendaCompraLojaVirtual vclv "
 		 + "WHERE vclv.id = ?1 AND vclv.excluido = false")
 	Optional<VendaCompraLojaVirtual> buscarVendaCompraLojaVirtualPorIdSemExclusao(Long id);
@@ -68,5 +68,5 @@ public interface VendaCompraLojaVirtualRepository
 		     + "AND iv.vendaCompraLojaVirtual.dataVenda >= ?1 "
 		     + "AND iv.vendaCompraLojaVirtual.dataVenda <= ?2")
 	List<VendaCompraLojaVirtual> buscarVendaCompraLojaVirtualPorIntervaloDeDatasDaVenda(Date data1, Date data2);
-	
+
 }

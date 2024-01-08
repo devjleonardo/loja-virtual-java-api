@@ -25,6 +25,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.joseleonardo.lojavirtual.enums.TipoEndereco;
+
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @SequenceGenerator(name = "seq_pessoa", sequenceName = "seq_pessoa", allocationSize = 1, initialValue = 1)
@@ -52,14 +54,14 @@ public abstract class Pessoa implements Serializable {
 	@NotNull(message = "O telefone deve ser informado")
 	@Column(nullable = false)
 	private String telefone;
-	
+
 	@Column
 	private String tipoPessoa; /* FISICA, JURIDICA, CLIENTE, USUARIO, EMPRESA */
-	
+
 	@ManyToOne(targetEntity = PessoaJuridica.class)
 	@JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "fk_empresa"))
 	private PessoaJuridica empresa;
-	
+
 	@OneToMany(mappedBy = "pessoa", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Endereco> enderecos = new ArrayList<>();
 
@@ -117,6 +119,15 @@ public abstract class Pessoa implements Serializable {
 
 	public void setEnderecos(List<Endereco> enderecos) {
 		this.enderecos = enderecos;
+	}
+
+	public Endereco getEnderecoEntrega() {
+		for (Endereco endereco : enderecos) {
+			if (endereco.getTipoEndereco().equals(TipoEndereco.ENTREGA)) {
+				return endereco;
+			}
+		}
+		return null;
 	}
 
 	@Override

@@ -1,0 +1,13 @@
+/* JSON que envia os dados para impressão de etiquetas */
+{
+   "mode": "private",
+   "orders":[
+      "9b09a9fa-4d15-4cb6-a533-91dace560861"
+   ]
+}
+
+
+/* JSON de retorno da ação de impressão de etiquetas */
+{
+   "url": "https:\\sandbox.melhorenvio.com.br\imprimir\MxwptxHXWD3z"
+}
