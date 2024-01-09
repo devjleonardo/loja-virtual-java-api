@@ -74,12 +74,12 @@ public class VendaCompraLojaVirtual implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private StatusVendaCompraLojaVirtual statusVendaCompraLojaVirtual;
 	
-	private String codigoFrete;
+	private String idEtiquetaEnvioFrete;
 	
-	private String urlImpressaoEtiquetaFrete;
+	private String urlImpressaoEtiquetaEnvioFrete;
 	
-	/* Frete que foi escolhido cliente no momento da compra */
-	private String servicoTransportadora;
+	/* Frete que foi escolhido pelo cliente no momento da compra */
+	private String idServicoTransportadora;
 
 	@NotNull(message = "A pessoa da venda deve ser informada")
 	@ManyToOne(targetEntity = PessoaFisica.class, cascade = CascadeType.ALL)
@@ -190,30 +190,30 @@ public class VendaCompraLojaVirtual implements Serializable {
 		this.statusVendaCompraLojaVirtual = statusVendaCompraLojaVirtual;
 	}
 	
-	public String getCodigoFrete() {
-		return codigoFrete;
+	public String getIdEtiquetaEnvioFrete() {
+		return idEtiquetaEnvioFrete;
 	}
 	
-	public void setCodigoFrete(String codigoFrete) {
-		this.codigoFrete = codigoFrete;
+	public void setIdEtiquetaEnvioFrete(String idEtiquetaEnvioFrete) {
+		this.idEtiquetaEnvioFrete = idEtiquetaEnvioFrete;
 	}
 	
-	public String getUrlImpressaoEtiquetaFrete() {
-		return urlImpressaoEtiquetaFrete;
+	public String getUrlImpressaoEtiquetaEnvioFrete() {
+		return urlImpressaoEtiquetaEnvioFrete;
 	}
 	
-	public void setUrlImpressaoEtiquetaFrete(String urlImpressaoEtiquetaFrete) {
-		this.urlImpressaoEtiquetaFrete = urlImpressaoEtiquetaFrete;
+	public void setUrlImpressaoEtiquetaEnvioFrete(String urlImpressaoEtiquetaEnvioFrete) {
+		this.urlImpressaoEtiquetaEnvioFrete = urlImpressaoEtiquetaEnvioFrete;
 	}
 	
-	public String getServicoTransportadora() {
-		return servicoTransportadora;
+	public String getIdServicoTransportadora() {
+		return idServicoTransportadora;
 	}
 	
-	public void setServicoTransportadora(String servicoTransportadora) {
-		this.servicoTransportadora = servicoTransportadora;
+	public void setIdServicoTransportadora(String idServicoTransportadora) {
+		this.idServicoTransportadora = idServicoTransportadora;
 	}
-
+	
 	public PessoaFisica getPessoa() {
 		return pessoa;
 	}

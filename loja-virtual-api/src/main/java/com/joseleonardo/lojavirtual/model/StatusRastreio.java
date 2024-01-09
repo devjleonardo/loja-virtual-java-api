@@ -3,6 +3,7 @@ package com.joseleonardo.lojavirtual.model;
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -25,16 +26,11 @@ public class StatusRastreio implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_status_rastreio")
+	@Column(name = "id", columnDefinition = "serial", insertable = false)
 	private Long id;
 
-	private String centroDistribuicao;
+	private String urlRastreio;
 
-	private String cidade;
-
-	private String estado;
-
-	private String status;
-	
 	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "venda_compra_loja_virtual_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "fk_venda_compra_loja_virtual"))
@@ -53,36 +49,12 @@ public class StatusRastreio implements Serializable {
 		this.id = id;
 	}
 
-	public String getCentroDistribuicao() {
-		return centroDistribuicao;
+	public String getUrlRastreio() {
+		return urlRastreio;
 	}
 
-	public void setCentroDistribuicao(String centroDistribuicao) {
-		this.centroDistribuicao = centroDistribuicao;
-	}
-
-	public String getCidade() {
-		return cidade;
-	}
-
-	public void setCidade(String cidade) {
-		this.cidade = cidade;
-	}
-
-	public String getEstado() {
-		return estado;
-	}
-
-	public void setEstado(String estado) {
-		this.estado = estado;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
+	public void setUrlRastreio(String urlRastreio) {
+		this.urlRastreio = urlRastreio;
 	}
 
 	public VendaCompraLojaVirtual getVendaCompraLojaVirtual() {

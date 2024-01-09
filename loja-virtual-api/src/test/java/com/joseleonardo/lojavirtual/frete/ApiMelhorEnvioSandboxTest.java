@@ -2,6 +2,14 @@ package com.joseleonardo.lojavirtual.frete;
 
 import java.io.IOException;
 
+import com.joseleonardo.lojavirtual.integracao.ApiTokenIntegracao;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 public class ApiMelhorEnvioSandboxTest {
 
 	public static void main(String[] args) throws IOException {
@@ -87,6 +95,23 @@ public class ApiMelhorEnvioSandboxTest {
 		
 		System.out.println(response.body().string());
 		*/
+		
+		OkHttpClient client = new OkHttpClient();
+
+		MediaType mediaType = MediaType.parse("application/json");
+		RequestBody body = RequestBody.create(mediaType, "{\"orders\":[\"9b09a9fa-4d15-4cb6-a533-91dace560861\"]}");
+		Request request = new Request.Builder()
+		  .url(ApiTokenIntegracao.URL_MELHOR_ENVIO_SANDABOX + "/api/v2/me/shipment/tracking")
+		  .post(body)
+		  .addHeader("Accept", "application/json")
+		  .addHeader("Content-type", "application/json")
+		  .addHeader("Authorization", "Bearer " + ApiTokenIntegracao.TOKEN_MELHOR_ENVIO_SANDBOX)
+		  .addHeader("User-Agent", "jlcb.lojavirtual@gmail.com")
+		  .build();
+
+		Response response = client.newCall(request).execute();
+		
+		System.out.println(response.body().string());
 	}
 	
 }

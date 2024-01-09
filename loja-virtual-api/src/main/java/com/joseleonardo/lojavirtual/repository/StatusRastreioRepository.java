@@ -12,9 +12,9 @@ import com.joseleonardo.lojavirtual.model.StatusRastreio;
 @Repository
 @Transactional
 public interface StatusRastreioRepository extends JpaRepository<StatusRastreio, Long> {
-
+	
 	@Query("SELECT sr FROM StatusRastreio sr WHERE sr.vendaCompraLojaVirtual.id = ?1 "
 		 + "ORDER BY sr.id")
 	List<StatusRastreio> buscarStatusRastreioPorVendaId(Long vendaId);
-	
+
 }

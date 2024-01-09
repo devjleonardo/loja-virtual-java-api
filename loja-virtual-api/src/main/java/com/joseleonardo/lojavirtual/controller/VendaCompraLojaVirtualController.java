@@ -17,6 +17,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,7 +55,6 @@ import com.joseleonardo.lojavirtual.repository.NotaFiscalVendaRepository;
 import com.joseleonardo.lojavirtual.repository.PessoaFisicaRepository;
 import com.joseleonardo.lojavirtual.repository.PessoaJuridicaRepository;
 import com.joseleonardo.lojavirtual.repository.ProdutoRepository;
-import com.joseleonardo.lojavirtual.repository.StatusRastreioRepository;
 import com.joseleonardo.lojavirtual.repository.VendaCompraLojaVirtualRepository;
 import com.joseleonardo.lojavirtual.service.EnvioEmailService;
 import com.joseleonardo.lojavirtual.service.VendaCompraLojaVirtualService;
@@ -75,9 +75,6 @@ public class VendaCompraLojaVirtualController {
 	
 	@Autowired
 	private NotaFiscalVendaRepository notaFiscalVendaRepository;
-	
-	@Autowired
-	private StatusRastreioRepository statusRastreioRepository;
 	
 	@Autowired
 	private VendaCompraLojaVirtualService vendaCompraLojaVirtualService;
@@ -140,16 +137,6 @@ public class VendaCompraLojaVirtualController {
 		
 		/* Salva primeiro a venda e todos os dados */
 		vendaCompraLojaVirtual = vendaCompraLojaVirtualRepository.saveAndFlush(vendaCompraLojaVirtual);
-		
-		StatusRastreio statusRastreio = new StatusRastreio();
-		statusRastreio.setCentroDistribuicao("Loja local");
-		statusRastreio.setCidade("Local");
-		statusRastreio.setEstado("Local");
-		statusRastreio.setStatus("Inicio compra");
-		statusRastreio.setVendaCompraLojaVirtual(vendaCompraLojaVirtual);
-		statusRastreio.setEmpresa(vendaCompraLojaVirtual.getEmpresa());
-		
-		statusRastreioRepository.save(statusRastreio);
 		
 		/* Associa a venda gravada no banco com a nota fiscal */
 		vendaCompraLojaVirtual.getNotaFiscalVenda().setVendaCompraLojaVirtual(vendaCompraLojaVirtual);
@@ -529,9 +516,9 @@ public class VendaCompraLojaVirtualController {
 	}
 	
 	@ResponseBody
-	@GetMapping(value = "**/inserirFretesNoCarrinho/{vendaId}")
-	public ResponseEntity<String> inserirFretesNoCarrinho(
-			@PathVariable("vendaId") Long vendaId) throws LojaVirtualException, IOException, SQLException {
+	@GetMapping(value = "**/gerarEtiquetaEnvioFrete/{vendaId}")
+	public ResponseEntity<String> gerarEtiquetaEnvioFrete (
+	        @PathVariable("vendaId") Long vendaId) throws LojaVirtualException, IOException, SQLException {
 		VendaCompraLojaVirtual vendaCompraLojaVirtual = vendaCompraLojaVirtualRepository
 				.findById(vendaId).orElse(null);
 		
@@ -545,7 +532,9 @@ public class VendaCompraLojaVirtualController {
 		vendaCompraLojaVirtual.getEmpresa().setEnderecos(enderecos);
 		
 		InsercaoFretesNoCarrinhoDTO insercaoFretesNoCarrinhoDTO = new InsercaoFretesNoCarrinhoDTO();
-		insercaoFretesNoCarrinhoDTO.setService(vendaCompraLojaVirtual.getServicoTransportadora());
+		insercaoFretesNoCarrinhoDTO.setService(
+		    vendaCompraLojaVirtual.getIdServicoTransportadora()
+		);
 		insercaoFretesNoCarrinhoDTO.setAgency("49");
 		
 		PessoaJuridica empresa = vendaCompraLojaVirtual.getEmpresa();
@@ -631,22 +620,26 @@ public class VendaCompraLojaVirtualController {
 		ObjectMapper objectMapper = new ObjectMapper();
 		String jsonEnvio = objectMapper.writeValueAsString(insercaoFretesNoCarrinhoDTO);
 		
-		OkHttpClient client = new OkHttpClient();
+		OkHttpClient clientInserirFreteNoCarrinho = new OkHttpClient();
 		
-		okhttp3.MediaType mediaType = okhttp3.MediaType.parse("application/json");
-		okhttp3.RequestBody body = okhttp3.RequestBody.create(mediaType, jsonEnvio);
+		okhttp3.MediaType mediaTypeInserirFreteNoCarrinho = okhttp3.MediaType.parse("application/json");
+		okhttp3.RequestBody bodyFreteNoCarrinho = okhttp3.RequestBody.create(mediaTypeInserirFreteNoCarrinho, jsonEnvio);
+		
 		okhttp3.Request request = new okhttp3.Request.Builder()
-		  .url(ApiTokenIntegracao.URL_MELHOR_ENVIO_SANDABOX + "/api/v2/me/cart")
-		  .post(body)
-		  .addHeader("Accept", "application/json")
-		  .addHeader("Content-Type", "application/json")
-		  .addHeader("Authorization", "Bearer " + ApiTokenIntegracao.TOKEN_MELHOR_ENVIO_SANDBOX)
-		  .addHeader("User-Agent", "jlcb.lojavirtual@gmail.com")
-		  .build();
+		    .url(ApiTokenIntegracao.URL_MELHOR_ENVIO_SANDABOX + "/api/v2/me/cart")
+		    .post(bodyFreteNoCarrinho)
+		    .addHeader("Accept", "application/json")
+		    .addHeader("Content-Type", "application/json")
+		    .addHeader(
+		         "Authorization", "Bearer " 
+		        + ApiTokenIntegracao.TOKEN_MELHOR_ENVIO_SANDBOX
+		    )
+		    .addHeader("User-Agent", "jlcb.lojavirtual@gmail.com")
+		    .build();
 		
-		okhttp3.Response response = client.newCall(request).execute();
+		okhttp3.Response responseInserirFreteNoCarrinho = clientInserirFreteNoCarrinho.newCall(request).execute();
 		
-		String respostaJson = response.body().string();
+		String respostaJson = responseInserirFreteNoCarrinho.body().string();
 		
 		if (respostaJson.contains("error")) {
 			throw new LojaVirtualException(respostaJson);
@@ -656,41 +649,49 @@ public class VendaCompraLojaVirtualController {
 		
 		Iterator<JsonNode> camposDaApi = retornoDaApi.iterator();
 		
-		String codigoFrete = "";
+		String idEtiquetaEnvioFrete = "";
 		
 		while (camposDaApi.hasNext()) {
 			JsonNode campoApi = camposDaApi.next();
 			
 			if (campoApi.textValue() != null) {
-				codigoFrete = campoApi.textValue();
+				idEtiquetaEnvioFrete = campoApi.textValue();
 			} else {
-				codigoFrete = campoApi.asText();
+				idEtiquetaEnvioFrete = campoApi.asText();
 			}
 			
 			break;
 		}
 		
-		vendaCompraLojaVirtual.setCodigoFrete(codigoFrete);
+		vendaCompraLojaVirtual.setIdEtiquetaEnvioFrete(idEtiquetaEnvioFrete);
 		
-		/* Salvando o código do frete na api do Melhor Envio */
+		/* Salvando o id da etiqueta de envio do frete retornado da API do Melhor Envio */
 		jdbcTemplate.execute(
 				  "BEGIN; "
-				+ "UPDATE venda_compra_loja_virtual SET codigo_frete = '" + codigoFrete + "' "
+				+ "UPDATE venda_compra_loja_virtual "
+				+ "SET id_etiqueta_envio_frete = '" + idEtiquetaEnvioFrete + "' "
 			    + "WHERE id = " + vendaCompraLojaVirtual.getId() + "; "
 				+ "COMMIT;");
 		
 		OkHttpClient clientCompraDeFretes = new OkHttpClient();
 
 		okhttp3.MediaType mediaTypeCompraDeFretes = okhttp3.MediaType.parse("application/json");
-		okhttp3.RequestBody bodyCompraDeFretes = okhttp3.RequestBody.create(mediaTypeCompraDeFretes, "{\"orders\":[\"" + codigoFrete + "\"]}");
+		okhttp3.RequestBody bodyCompraDeFretes = okhttp3.RequestBody.create(
+		    mediaTypeCompraDeFretes, 
+			"{\"orders\":[\"" + idEtiquetaEnvioFrete + "\"]}"
+		);
+		
 		okhttp3.Request requestCompraDeFretes = new okhttp3.Request.Builder()
-		  .url(ApiTokenIntegracao.URL_MELHOR_ENVIO_SANDABOX + "/api/v2/me/shipment/checkout")
-		  .post(bodyCompraDeFretes)
-		  .addHeader("Accept", "application/json")
-		  .addHeader("Content-Type", "application/json")
-		  .addHeader("Authorization", "Bearer " + ApiTokenIntegracao.TOKEN_MELHOR_ENVIO_SANDBOX)
-		  .addHeader("User-Agent", "jlcb.lojavirtual@gmail.com")
-		  .build();
+		    .url(ApiTokenIntegracao.URL_MELHOR_ENVIO_SANDABOX + "/api/v2/me/shipment/checkout")
+		    .post(bodyCompraDeFretes)
+		    .addHeader("Accept", "application/json")
+		    .addHeader("Content-Type", "application/json")
+		    .addHeader(
+		        "Authorization", "Bearer " 
+		        + ApiTokenIntegracao.TOKEN_MELHOR_ENVIO_SANDBOX
+		    )
+		    .addHeader("User-Agent", "jlcb.lojavirtual@gmail.com")
+		    .build();
 
 		okhttp3.Response responseCompraDeFretes = clientCompraDeFretes
 		    .newCall(requestCompraDeFretes).execute();
@@ -702,15 +703,19 @@ public class VendaCompraLojaVirtualController {
 		OkHttpClient clientGeracaoDeEtiquetas = new OkHttpClient();
 
 		okhttp3.MediaType mediaTypeGeracaoDeEtiquetas = okhttp3.MediaType.parse("application/json");
-		okhttp3.RequestBody bodyGeracaoDeEtiquetas = okhttp3.RequestBody.create(mediaTypeGeracaoDeEtiquetas, "{\"orders\":[\"" + codigoFrete + "\"]}");
+		okhttp3.RequestBody bodyGeracaoDeEtiquetas = okhttp3.RequestBody.create(mediaTypeGeracaoDeEtiquetas, "{\"orders\":[\"" + idEtiquetaEnvioFrete + "\"]}");
+		
 		okhttp3.Request requestGeracaoDeEtiquetas = new okhttp3.Request.Builder()
-		  .url(ApiTokenIntegracao.URL_MELHOR_ENVIO_SANDABOX + "/api/v2/me/shipment/generate")
-		  .post(bodyGeracaoDeEtiquetas)
-		  .addHeader("Accept", "application/json")
-		  .addHeader("Content-Type", "application/json")
-		  .addHeader("Authorization", "Bearer " + ApiTokenIntegracao.TOKEN_MELHOR_ENVIO_SANDBOX)
-		  .addHeader("User-Agent", "jlcb.lojavirtual@gmail.com")
-		  .build();
+		    .url(ApiTokenIntegracao.URL_MELHOR_ENVIO_SANDABOX + "/api/v2/me/shipment/generate")
+		    .post(bodyGeracaoDeEtiquetas)
+		    .addHeader("Accept", "application/json")
+		    .addHeader("Content-Type", "application/json")
+		    .addHeader(
+		         "Authorization", "Bearer " 
+		        + ApiTokenIntegracao.TOKEN_MELHOR_ENVIO_SANDBOX
+		     )
+		    .addHeader("User-Agent", "jlcb.lojavirtual@gmail.com")
+		    .build();
 
 		okhttp3.Response responseGeracaoDeEtiquetas = clientGeracaoDeEtiquetas
 		    .newCall(requestGeracaoDeEtiquetas)
@@ -723,15 +728,19 @@ public class VendaCompraLojaVirtualController {
 		OkHttpClient clientImpressaoDeEtiquetas = new OkHttpClient();
 
 		okhttp3.MediaType mediaTypeImpressaoDeEtiquetas = okhttp3.MediaType.parse("application/json");
-		okhttp3.RequestBody bodyImpressaoDeEtiquetas = okhttp3.RequestBody.create(mediaTypeImpressaoDeEtiquetas, "{\"mode\":\"private\",\"orders\":[\"" + codigoFrete + "\"]}");
+		okhttp3.RequestBody bodyImpressaoDeEtiquetas = okhttp3.RequestBody.create(mediaTypeImpressaoDeEtiquetas, "{\"mode\":\"private\",\"orders\":[\"" + idEtiquetaEnvioFrete + "\"]}");
+		
 		okhttp3.Request requestImpressaoDeEtiquetas = new okhttp3.Request.Builder()
-		  .url(ApiTokenIntegracao.URL_MELHOR_ENVIO_SANDABOX + "/api/v2/me/shipment/print")
-		  .post(bodyImpressaoDeEtiquetas)
-		  .addHeader("Accept", "application/json")
-		  .addHeader("Content-Type", "application/json")
-		  .addHeader("Authorization", "Bearer " + ApiTokenIntegracao.TOKEN_MELHOR_ENVIO_SANDBOX)
-		  .addHeader("User-Agent", "jlcb.lojavirtual@gmail.com")
-		  .build();
+		    .url(ApiTokenIntegracao.URL_MELHOR_ENVIO_SANDABOX + "/api/v2/me/shipment/print")
+		    .post(bodyImpressaoDeEtiquetas)
+		    .addHeader("Accept", "application/json")
+		    .addHeader("Content-Type", "application/json")
+		    .addHeader(
+		        "Authorization", "Bearer " 
+		        + ApiTokenIntegracao.TOKEN_MELHOR_ENVIO_SANDBOX
+		    )
+		    .addHeader("User-Agent", "jlcb.lojavirtual@gmail.com")
+		    .build();
 
 		okhttp3.Response responseImpressaoDeEtiquetas = clientImpressaoDeEtiquetas
 		    .newCall(requestImpressaoDeEtiquetas)
@@ -741,13 +750,82 @@ public class VendaCompraLojaVirtualController {
 			throw new LojaVirtualException("Não foi possível realizar a impressão de etiqueta");
 		}
 		
-		String urlImpressaoEtiquetaFrete = responseImpressaoDeEtiquetas.body().string();
+		String urlImpressaoEtiquetaEnvioFrete = responseImpressaoDeEtiquetas.body().string();
 		
 		jdbcTemplate.execute(
 				  "BEGIN; "
-				+ "UPDATE venda_compra_loja_virtual SET url_impressao_etiqueta_frete = '" + urlImpressaoEtiquetaFrete + "' " 
+				+ "UPDATE venda_compra_loja_virtual "
+				+ "SET url_impressao_etiqueta_envio_frete = '" 
+				+     urlImpressaoEtiquetaEnvioFrete + "' " 
 				+ "WHERE id = " + vendaCompraLojaVirtual.getId() + "; "
 				+ "COMMIT;");
+		
+		OkHttpClient clientRastreio = new OkHttpClient();
+
+		okhttp3.MediaType mediaTypeRastreio = okhttp3.MediaType.parse("application/json");
+		okhttp3.RequestBody bodyRastreio = okhttp3.RequestBody.create(mediaTypeRastreio , "{\"orders\":[\"" + idEtiquetaEnvioFrete + "\"]}");
+		
+		okhttp3.Request requestRastreio = new okhttp3.Request.Builder()
+		    .url(ApiTokenIntegracao.URL_MELHOR_ENVIO_SANDABOX + "/api/v2/me/shipment/tracking")
+		    .post(bodyRastreio)
+		    .addHeader("Accept", "application/json")
+		    .addHeader("Content-type", "application/json")
+		    .addHeader(
+		    	"Authorization", "Bearer " 
+		        + ApiTokenIntegracao.TOKEN_MELHOR_ENVIO_SANDBOX
+		    )
+		    .addHeader("User-Agent", "jlcb.lojavirtual@gmail.com")
+		    .build();
+
+		okhttp3.Response responseRastreio = clientRastreio.newCall(requestRastreio).execute();
+		
+		JsonNode retornoDaApiRastreio = new ObjectMapper().readTree(responseRastreio.body().string());
+		
+		Iterator<JsonNode> camposDaApiRastreio = retornoDaApiRastreio.iterator();
+		
+		String codigoRastreamentoFrete = "";
+		
+		while (camposDaApiRastreio.hasNext()) {
+			JsonNode campoApiRastreio = camposDaApiRastreio.next();
+			
+			if (campoApiRastreio.get("tracking") != null) {
+				codigoRastreamentoFrete = campoApiRastreio.get("tracking").asText();
+			} else {
+				codigoRastreamentoFrete = campoApiRastreio.asText();
+			}
+			
+			break;
+		}
+		
+		String sqlSelectStatusRastreios = 
+				  "SELECT * FROM status_rastreio "
+				+ "WHERE venda_compra_loja_virtual_id = " + vendaId;
+				
+		List<StatusRastreio> rastreios = jdbcTemplate.query(
+		    sqlSelectStatusRastreios,
+		    new BeanPropertyRowMapper<>(StatusRastreio.class)
+		);	
+		
+		if (rastreios.isEmpty()) {
+			jdbcTemplate.execute(
+					  "BEGIN; "
+					+ "INSERT INTO status_rastreio"
+					+ "(url_rastreio, venda_compra_loja_virtual_id, empresa_id) "
+					+ "VALUES (" 
+					+ "    'https://app.melhorrastreio.com.br/app/" + codigoRastreamentoFrete + "', " 
+					+      vendaCompraLojaVirtual.getId() + ", "
+					+      vendaCompraLojaVirtual.getEmpresa().getId()  
+					+ "); "
+					+ "COMMIT;");
+		} else {
+			jdbcTemplate.execute(
+					  "BEGIN; "
+					+ "UPDATE status_rastreio SET url_rastreio = "
+					+ "    'https://app.melhorrastreio.com.br/app/" + codigoRastreamentoFrete + "' " 
+					+ "WHERE venda_compra_loja_virtual_id = " 
+					+      vendaCompraLojaVirtual.getId() + "; "
+					+ "COMMIT;");
+		}
 		
 		return new ResponseEntity<String>("Sucesso", HttpStatus.OK);
 	}
