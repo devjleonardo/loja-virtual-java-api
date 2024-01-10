@@ -29,7 +29,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import com.joseleonardo.lojavirtual.enums.StatusVendaCompraLojaVirtual;
+import com.joseleonardo.lojavirtual.model.enums.StatusVendaCompraLojaVirtual;
 
 @Entity
 @Table(name = "venda_compra_loja_virtual")

@@ -5,11 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Profile;
 
-import com.joseleonardo.lojavirtual.controller.PessoaJuridicaController;
-import com.joseleonardo.lojavirtual.enums.TipoEndereco;
+import com.joseleonardo.lojavirtual.api.controller.PessoaJuridicaController;
 import com.joseleonardo.lojavirtual.exception.LojaVirtualException;
 import com.joseleonardo.lojavirtual.model.Endereco;
 import com.joseleonardo.lojavirtual.model.PessoaJuridica;
+import com.joseleonardo.lojavirtual.model.enums.TipoEndereco;
 
 import junit.framework.TestCase;
 

@@ -3,7 +3,7 @@ package com.joseleonardo.lojavirtual.service;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.joseleonardo.lojavirtual.model.dto.cnpj.CnpjDTO;
+import com.joseleonardo.lojavirtual.api.consulta.cnpj.dto.CnpjDTO;
 
 @Service
 public class ConsultaCnpjService {

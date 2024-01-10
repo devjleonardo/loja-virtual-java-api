@@ -25,7 +25,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.joseleonardo.lojavirtual.enums.TipoEndereco;
+import com.joseleonardo.lojavirtual.model.enums.TipoEndereco;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)

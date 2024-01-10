@@ -23,7 +23,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.joseleonardo.lojavirtual.enums.StatusContaPagar;
+import com.joseleonardo.lojavirtual.model.enums.StatusContaPagar;
 
 @Entity
 @Table(name = "conta_pagar")

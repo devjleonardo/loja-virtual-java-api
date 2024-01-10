@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import com.joseleonardo.lojavirtual.model.dto.RelatorioAlertaEstoqueBaixoDeProdutoDTO;
+import com.joseleonardo.lojavirtual.api.dto.relatorio.RelatorioAlertaEstoqueBaixoDeProdutoDTO;
 
 @Service
 public class ProdutoService {

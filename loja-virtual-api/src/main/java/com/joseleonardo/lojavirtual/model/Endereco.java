@@ -18,7 +18,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.joseleonardo.lojavirtual.enums.TipoEndereco;
+import com.joseleonardo.lojavirtual.model.enums.TipoEndereco;
 
 @Entity
 @Table(name = "endereco")

@@ -2,7 +2,7 @@ package com.joseleonardo.lojavirtual.frete;
 
 import java.io.IOException;
 
-import com.joseleonardo.lojavirtual.integracao.ApiTokenIntegracao;
+import com.joseleonardo.lojavirtual.api.integracao.frete.melhorenvio.constants.MelhorEnvioFreteConstants;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -99,15 +99,23 @@ public class ApiMelhorEnvioSandboxTest {
 		OkHttpClient client = new OkHttpClient();
 
 		MediaType mediaType = MediaType.parse("application/json");
-		RequestBody body = RequestBody.create(mediaType, "{\"orders\":[\"9b09a9fa-4d15-4cb6-a533-91dace560861\"]}");
+		
+		RequestBody body = RequestBody.create(
+				mediaType, 
+				"{\"orders\":[\"9b09a9fa-4d15-4cb6-a533-91dace560861\"]}"
+		);
+		
 		Request request = new Request.Builder()
-		  .url(ApiTokenIntegracao.URL_MELHOR_ENVIO_SANDABOX + "/api/v2/me/shipment/tracking")
-		  .post(body)
-		  .addHeader("Accept", "application/json")
-		  .addHeader("Content-type", "application/json")
-		  .addHeader("Authorization", "Bearer " + ApiTokenIntegracao.TOKEN_MELHOR_ENVIO_SANDBOX)
-		  .addHeader("User-Agent", "jlcb.lojavirtual@gmail.com")
-		  .build();
+		    .url(MelhorEnvioFreteConstants.URL_SANDABOX + "/api/v2/me/shipment/tracking")
+		    .post(body)
+		    .addHeader("Accept", "application/json")
+		    .addHeader("Content-type", "application/json")
+		    .addHeader(
+		        "Authorization", "Bearer " 
+		        + MelhorEnvioFreteConstants.ACCESS_TOKEN_SANDBOX
+		    )
+		    .addHeader("User-Agent", "jlcb.lojavirtual@gmail.com")
+		    .build();
 
 		Response response = client.newCall(request).execute();
 		

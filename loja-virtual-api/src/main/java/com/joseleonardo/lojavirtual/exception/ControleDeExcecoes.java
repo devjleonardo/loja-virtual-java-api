@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.joseleonardo.lojavirtual.model.dto.ObjetoErroDTO;
+import com.joseleonardo.lojavirtual.api.dto.exception.ObjetoErroDTO;
 import com.joseleonardo.lojavirtual.service.EnvioEmailService;
 
 @ControllerAdvice

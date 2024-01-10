@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import com.joseleonardo.lojavirtual.model.dto.RelatorioNotaFiscalCompraProdutosCompradosDTO;
+import com.joseleonardo.lojavirtual.api.dto.relatorio.RelatorioNotaFiscalCompraProdutosCompradosDTO;
 
 @Service
 public class NotaFiscalCompraService {

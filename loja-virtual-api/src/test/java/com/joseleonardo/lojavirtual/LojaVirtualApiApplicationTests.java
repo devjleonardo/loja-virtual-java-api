@@ -17,7 +17,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joseleonardo.lojavirtual.controller.AcessoController;
+import com.joseleonardo.lojavirtual.api.controller.AcessoController;
 import com.joseleonardo.lojavirtual.exception.LojaVirtualException;
 import com.joseleonardo.lojavirtual.model.Acesso;
 import com.joseleonardo.lojavirtual.repository.AcessoRepository;
