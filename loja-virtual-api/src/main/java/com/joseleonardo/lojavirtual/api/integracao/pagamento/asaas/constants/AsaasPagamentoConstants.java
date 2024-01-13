@@ -10,12 +10,12 @@ public class AsaasPagamentoConstants {
     
     public static final String ASAAS_BOLETO_PIX = "UNDEFINED";
     
-    public static String ASAAS_URL_PRODUCAO = "https://www.asaas.com/api/v3/";
+    public static String ASAAS_API_BASE_URL_PRODUCAO = "https://www.asaas.com/api/v3/";
     
-    public static String ASAAS_ACCESS_TOKEN_PRODUCAO = "$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDAzODI2MTk6OiRhYWNoXzYxNmE3ODU5LWUzYTAtNDM1Yy1hMDE1LTlmZjgxZTQ3ZDBlMw==";
+    public static String ASAAS_ACCESS_TOKEN_PRODUCAO = "$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDAzODI2MTk6OiRhYWNoX2VkODY5MWMzLTA4ZTYtNDZlMS04YjJjLTc3NGE1MGNhMTY2OQ==";
     
-    public static String ASAAS_URL_SANDBOX = "https://sandbox.asaas.com/api/v3/";
+    public static String ASAAS_API_BASE_URL_SANDBOX = "https://sandbox.asaas.com/api/v3/";
     
-    public static String ASAAS_ACCESS_TOKEN_SANDBOX = "$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDAwNzIyMTg6OiRhYWNoXzY2MDllNmI0LTY4ZjEtNDJhNS04ZTk2LTU3NzI5ZWZmNzdlYw==";
+    public static String ASAAS_ACCESS_TOKEN_SANDBOX = "$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDAwNzIyMTg6OiRhYWNoXzcwYTQxNTc3LTBhNjQtNGNkZi1hM2FiLTUwNjIwZjZkOTc2Mw==";
 
 }
