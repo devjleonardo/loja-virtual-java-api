@@ -8,10 +8,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Profile;
 
 import com.joseleonardo.lojavirtual.LojaVirtualApiApplication;
-import com.joseleonardo.lojavirtual.api.integracao.emailmarketing.getresponse.dto.campanha.GetResponseEmailMarketingCampaignDTO;
-import com.joseleonardo.lojavirtual.api.integracao.emailmarketing.getresponse.dto.campanha.GetResponseEmailMarketingCampaignListDTO;
-import com.joseleonardo.lojavirtual.api.integracao.emailmarketing.getresponse.dto.contato.GetResponseEmailMarketingCriacaoContatoDTO;
-import com.joseleonardo.lojavirtual.api.integracao.emailmarketing.getresponse.dto.fromfields.GetResponseEmailMarketingFromFieldDTO;
+import com.joseleonardo.lojavirtual.api.integracao.email_marketing.get_response.dto.campanha.GetResponseEmailMarketingCampaignDTO;
+import com.joseleonardo.lojavirtual.api.integracao.email_marketing.get_response.dto.campanha.GetResponseEmailMarketingCampaignListDTO;
+import com.joseleonardo.lojavirtual.api.integracao.email_marketing.get_response.dto.contato.GetResponseEmailMarketingCriacaoContatoDTO;
+import com.joseleonardo.lojavirtual.api.integracao.email_marketing.get_response.dto.fromfields.GetResponseEmailMarketingFromFieldDTO;
+import com.joseleonardo.lojavirtual.api.integracao.email_marketing.get_response.service.GetResponseEmailMarketingService;
 
 import junit.framework.TestCase;
 

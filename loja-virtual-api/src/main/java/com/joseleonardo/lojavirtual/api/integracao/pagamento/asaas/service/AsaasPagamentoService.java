@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.constants.AsaasPagamentoConstants;
-import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.AsaasPagamentoClienteDTO;
+import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.criar_novo_cliente.AsaasPagamentoCriarNovoClienteDTO;
 import com.joseleonardo.lojavirtual.ssl.HostIgnoringSSLClient;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -19,7 +19,7 @@ import com.sun.jersey.api.client.WebResource;
 public class AsaasPagamentoService {
 	
 	@SuppressWarnings("unchecked")
-	public String criarNovoCliente(AsaasPagamentoClienteDTO novoClienteDTO) throws Exception {
+	public String criarNovoCliente(AsaasPagamentoCriarNovoClienteDTO novoClienteDTO) throws Exception {
 	    /* ID do cliente para ligar com a cobrança */
 	    String idCliente = "";
 	    

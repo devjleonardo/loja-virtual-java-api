@@ -2,7 +2,7 @@ package com.joseleonardo.lojavirtual.frete;
 
 import java.io.IOException;
 
-import com.joseleonardo.lojavirtual.api.integracao.frete.melhorenvio.constants.MelhorEnvioFreteConstants;
+import com.joseleonardo.lojavirtual.api.integracao.frete.melhor_envio.constants.MelhorEnvioFreteConstants;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;

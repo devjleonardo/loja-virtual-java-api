@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Profile;
 
 import com.joseleonardo.lojavirtual.LojaVirtualApiApplication;
-import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.AsaasPagamentoClienteDTO;
+import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.criar_novo_cliente.AsaasPagamentoCriarNovoClienteDTO;
 import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.service.AsaasPagamentoService;
 
 @Profile("test")
@@ -20,7 +20,7 @@ public class AsaasPagamentoServiceTest {
 	
 	@Test
 	public void testCriarNovoCliente() throws Exception {
-		AsaasPagamentoClienteDTO novoClienteDTO = new AsaasPagamentoClienteDTO();
+		AsaasPagamentoCriarNovoClienteDTO novoClienteDTO = new AsaasPagamentoCriarNovoClienteDTO();
 		novoClienteDTO.setName("José Leonardo");
 		novoClienteDTO.setCpfCnpj("07808516090");
 		novoClienteDTO.setEmail("leoprogamer57@gmail.com");
