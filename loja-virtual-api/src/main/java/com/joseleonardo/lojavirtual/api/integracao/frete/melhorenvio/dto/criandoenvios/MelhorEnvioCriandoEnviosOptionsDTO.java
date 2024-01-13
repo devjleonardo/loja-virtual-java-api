@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OptionsEnvioDTO implements Serializable {
+public class MelhorEnvioCriandoEnviosOptionsDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -18,11 +18,11 @@ public class OptionsEnvioDTO implements Serializable {
 
 	private boolean non_commercial;
 
-	private InvoiceEnvioDTO invoice = new InvoiceEnvioDTO();
+	private MelhorEnvioCriandoEnviosInvoiceDTO invoice = new MelhorEnvioCriandoEnviosInvoiceDTO();
 
 	private String plataform;
 
-	private List<TagsEnvioDTO> tags = new ArrayList<>();
+	private List<MelhorEnvioCriandoEnviosTagsDTO> tags = new ArrayList<>();
 
 	public String getInsurance_value() {
 		return insurance_value;
@@ -64,11 +64,11 @@ public class OptionsEnvioDTO implements Serializable {
 		this.non_commercial = non_commercial;
 	}
 
-	public InvoiceEnvioDTO getInvoice() {
+	public MelhorEnvioCriandoEnviosInvoiceDTO getInvoice() {
 		return invoice;
 	}
 
-	public void setInvoice(InvoiceEnvioDTO invoice) {
+	public void setInvoice(MelhorEnvioCriandoEnviosInvoiceDTO invoice) {
 		this.invoice = invoice;
 	}
 
@@ -80,11 +80,11 @@ public class OptionsEnvioDTO implements Serializable {
 		this.plataform = plataform;
 	}
 
-	public List<TagsEnvioDTO> getTags() {
+	public List<MelhorEnvioCriandoEnviosTagsDTO> getTags() {
 		return tags;
 	}
 
-	public void setTags(List<TagsEnvioDTO> tags) {
+	public void setTags(List<MelhorEnvioCriandoEnviosTagsDTO> tags) {
 		this.tags = tags;
 	}
 

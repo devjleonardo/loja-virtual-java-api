@@ -2,7 +2,7 @@ package com.joseleonardo.lojavirtual.api.integracao.frete.melhorenvio.dto.criand
 
 import java.io.Serializable;
 
-public class FromEnvioDTO implements Serializable {
+public class MelhorEnvioCriandoEnviosToDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

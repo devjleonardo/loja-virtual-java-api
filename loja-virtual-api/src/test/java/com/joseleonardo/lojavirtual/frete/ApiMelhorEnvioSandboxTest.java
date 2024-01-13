@@ -106,13 +106,13 @@ public class ApiMelhorEnvioSandboxTest {
 		);
 		
 		Request request = new Request.Builder()
-		    .url(MelhorEnvioFreteConstants.URL_SANDABOX + "/api/v2/me/shipment/tracking")
+		    .url(MelhorEnvioFreteConstants.MELHOR_ENVIO_URL_SANDABOX + "/api/v2/me/shipment/tracking")
 		    .post(body)
 		    .addHeader("Accept", "application/json")
 		    .addHeader("Content-type", "application/json")
 		    .addHeader(
 		        "Authorization", "Bearer " 
-		        + MelhorEnvioFreteConstants.ACCESS_TOKEN_SANDBOX
+		        + MelhorEnvioFreteConstants.MELHOR_ENVIO_ACCESS_TOKEN_SANDBOX
 		    )
 		    .addHeader("User-Agent", "jlcb.lojavirtual@gmail.com")
 		    .build();

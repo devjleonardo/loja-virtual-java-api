@@ -34,11 +34,11 @@ import com.joseleonardo.lojavirtual.api.dto.venda.ItemVendaLojaDTO;
 import com.joseleonardo.lojavirtual.api.dto.venda.VendaCompraLojaVirtualDTO;
 import com.joseleonardo.lojavirtual.api.integracao.frete.melhorenvio.constants.MelhorEnvioFreteConstants;
 import com.joseleonardo.lojavirtual.api.integracao.frete.melhorenvio.dto.EmpresaTransporteDTO;
-import com.joseleonardo.lojavirtual.api.integracao.frete.melhorenvio.dto.cotacao.CalculoFreteDTO;
-import com.joseleonardo.lojavirtual.api.integracao.frete.melhorenvio.dto.criandoenvios.InsercaoFretesNoCarrinhoDTO;
-import com.joseleonardo.lojavirtual.api.integracao.frete.melhorenvio.dto.criandoenvios.ProductsEnvioDTO;
-import com.joseleonardo.lojavirtual.api.integracao.frete.melhorenvio.dto.criandoenvios.TagsEnvioDTO;
-import com.joseleonardo.lojavirtual.api.integracao.frete.melhorenvio.dto.criandoenvios.VolumesEnvioDTO;
+import com.joseleonardo.lojavirtual.api.integracao.frete.melhorenvio.dto.cotacao.MelhorEnvioCalculoFreteDTO;
+import com.joseleonardo.lojavirtual.api.integracao.frete.melhorenvio.dto.criandoenvios.MelhorEnvioInsercaoFretesCarrinhoDTO;
+import com.joseleonardo.lojavirtual.api.integracao.frete.melhorenvio.dto.criandoenvios.MelhorEnvioCriandoEnviosProductsDTO;
+import com.joseleonardo.lojavirtual.api.integracao.frete.melhorenvio.dto.criandoenvios.MelhorEnvioCriandoEnviosTagsDTO;
+import com.joseleonardo.lojavirtual.api.integracao.frete.melhorenvio.dto.criandoenvios.MelhorEnvioCriandoEnviosVolumesDTO;
 import com.joseleonardo.lojavirtual.exception.LojaVirtualException;
 import com.joseleonardo.lojavirtual.model.ContaReceber;
 import com.joseleonardo.lojavirtual.model.Endereco;
@@ -460,7 +460,7 @@ public class VendaCompraLojaVirtualController {
 	@ResponseBody
 	@PostMapping(value = "**/calculoDeFreteLojaVirtual")
 	public ResponseEntity<List<EmpresaTransporteDTO>> calculoDeFreteLojaVirtual(
-			@RequestBody @Valid CalculoFreteDTO calculoFreteDTO) throws Exception {
+			@RequestBody @Valid MelhorEnvioCalculoFreteDTO calculoFreteDTO) throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
 		String json = objectMapper.writeValueAsString(calculoFreteDTO);
 		
@@ -469,11 +469,11 @@ public class VendaCompraLojaVirtualController {
 		okhttp3.MediaType mediaType = okhttp3.MediaType.parse("application/json");
 		okhttp3.RequestBody body = okhttp3.RequestBody.create(mediaType, json);
 		okhttp3.Request request = new okhttp3.Request.Builder()
-		  .url(MelhorEnvioFreteConstants.URL_SANDABOX + "/api/v2/me/shipment/calculate")
+		  .url(MelhorEnvioFreteConstants.MELHOR_ENVIO_URL_SANDABOX + "/api/v2/me/shipment/calculate")
 		  .post(body)
 		  .addHeader("Accept", "application/json")
 		  .addHeader("Content-Type", "application/json")
-		  .addHeader("Authorization", "Bearer " + MelhorEnvioFreteConstants.ACCESS_TOKEN_SANDBOX)
+		  .addHeader("Authorization", "Bearer " + MelhorEnvioFreteConstants.MELHOR_ENVIO_ACCESS_TOKEN_SANDBOX)
 		  .addHeader("User-Agent", "jlcb.lojavirtual@gmail.com")
 		  .build();
 
@@ -531,7 +531,7 @@ public class VendaCompraLojaVirtualController {
 		
 		vendaCompraLojaVirtual.getEmpresa().setEnderecos(enderecos);
 		
-		InsercaoFretesNoCarrinhoDTO insercaoFretesNoCarrinhoDTO = new InsercaoFretesNoCarrinhoDTO();
+		MelhorEnvioInsercaoFretesCarrinhoDTO insercaoFretesNoCarrinhoDTO = new MelhorEnvioInsercaoFretesCarrinhoDTO();
 		insercaoFretesNoCarrinhoDTO.setService(
 		    vendaCompraLojaVirtual.getIdServicoTransportadora()
 		);
@@ -572,10 +572,10 @@ public class VendaCompraLojaVirtualController {
 		insercaoFretesNoCarrinhoDTO.getTo().setState_abbr(enderecoEntregaCliente.getUf());
 		insercaoFretesNoCarrinhoDTO.getTo().setNote("Não há");
 		
-		List<ProductsEnvioDTO> products = new ArrayList<>();
+		List<MelhorEnvioCriandoEnviosProductsDTO> products = new ArrayList<>();
 		
 		for (ItemVendaLoja itemVendaLoja : vendaCompraLojaVirtual.getItensVendaLoja()) {
-			ProductsEnvioDTO product = new ProductsEnvioDTO();
+			MelhorEnvioCriandoEnviosProductsDTO product = new MelhorEnvioCriandoEnviosProductsDTO();
 			product.setName(itemVendaLoja.getProduto().getNome());
 			product.setQuantity(itemVendaLoja.getQuantidade().toString());
 			product.setUnitary_value(itemVendaLoja.getProduto().getValorVenda().toString());
@@ -585,10 +585,10 @@ public class VendaCompraLojaVirtualController {
 		
 		insercaoFretesNoCarrinhoDTO.setProducts(products);
 		
-		List<VolumesEnvioDTO> volumes = new ArrayList<>();
+		List<MelhorEnvioCriandoEnviosVolumesDTO> volumes = new ArrayList<>();
 		
 		for (ItemVendaLoja itemVendaLoja : vendaCompraLojaVirtual.getItensVendaLoja()) {
-			VolumesEnvioDTO volume = new VolumesEnvioDTO();
+			MelhorEnvioCriandoEnviosVolumesDTO volume = new MelhorEnvioCriandoEnviosVolumesDTO();
 			volume.setHeight(itemVendaLoja.getProduto().getAltura().toString());
 			volume.setWidth(itemVendaLoja.getProduto().getLargura().toString());
 			volume.setLength(itemVendaLoja.getProduto().getProfundidade().toString());
@@ -610,7 +610,7 @@ public class VendaCompraLojaVirtualController {
 		insercaoFretesNoCarrinhoDTO.getOptions()
 		    .setPlataform(vendaCompraLojaVirtual.getEmpresa().getNomeFantasia());
 		
-		TagsEnvioDTO tag = new TagsEnvioDTO();
+		MelhorEnvioCriandoEnviosTagsDTO tag = new MelhorEnvioCriandoEnviosTagsDTO();
 		tag.setTag("Identificação do pedido na plataforma, exemplo: " 
 		    + vendaCompraLojaVirtual.getId());
 		tag.setUrl(null);
@@ -626,13 +626,13 @@ public class VendaCompraLojaVirtualController {
 		okhttp3.RequestBody bodyFreteNoCarrinho = okhttp3.RequestBody.create(mediaTypeInserirFreteNoCarrinho, jsonEnvio);
 		
 		okhttp3.Request request = new okhttp3.Request.Builder()
-		    .url(MelhorEnvioFreteConstants.URL_SANDABOX + "/api/v2/me/cart")
+		    .url(MelhorEnvioFreteConstants.MELHOR_ENVIO_URL_SANDABOX + "/api/v2/me/cart")
 		    .post(bodyFreteNoCarrinho)
 		    .addHeader("Accept", "application/json")
 		    .addHeader("Content-Type", "application/json")
 		    .addHeader(
 		         "Authorization", "Bearer " 
-		        + MelhorEnvioFreteConstants.ACCESS_TOKEN_SANDBOX
+		        + MelhorEnvioFreteConstants.MELHOR_ENVIO_ACCESS_TOKEN_SANDBOX
 		    )
 		    .addHeader("User-Agent", "jlcb.lojavirtual@gmail.com")
 		    .build();
@@ -682,13 +682,13 @@ public class VendaCompraLojaVirtualController {
 		);
 		
 		okhttp3.Request requestCompraDeFretes = new okhttp3.Request.Builder()
-		    .url(MelhorEnvioFreteConstants.URL_SANDABOX + "/api/v2/me/shipment/checkout")
+		    .url(MelhorEnvioFreteConstants.MELHOR_ENVIO_URL_SANDABOX + "/api/v2/me/shipment/checkout")
 		    .post(bodyCompraDeFretes)
 		    .addHeader("Accept", "application/json")
 		    .addHeader("Content-Type", "application/json")
 		    .addHeader(
 		        "Authorization", "Bearer " 
-		        + MelhorEnvioFreteConstants.ACCESS_TOKEN_SANDBOX
+		        + MelhorEnvioFreteConstants.MELHOR_ENVIO_ACCESS_TOKEN_SANDBOX
 		    )
 		    .addHeader("User-Agent", "jlcb.lojavirtual@gmail.com")
 		    .build();
@@ -706,13 +706,13 @@ public class VendaCompraLojaVirtualController {
 		okhttp3.RequestBody bodyGeracaoDeEtiquetas = okhttp3.RequestBody.create(mediaTypeGeracaoDeEtiquetas, "{\"orders\":[\"" + idEtiquetaEnvioFrete + "\"]}");
 		
 		okhttp3.Request requestGeracaoDeEtiquetas = new okhttp3.Request.Builder()
-		    .url(MelhorEnvioFreteConstants.URL_SANDABOX + "/api/v2/me/shipment/generate")
+		    .url(MelhorEnvioFreteConstants.MELHOR_ENVIO_URL_SANDABOX + "/api/v2/me/shipment/generate")
 		    .post(bodyGeracaoDeEtiquetas)
 		    .addHeader("Accept", "application/json")
 		    .addHeader("Content-Type", "application/json")
 		    .addHeader(
 		         "Authorization", "Bearer " 
-		        + MelhorEnvioFreteConstants.ACCESS_TOKEN_SANDBOX
+		        + MelhorEnvioFreteConstants.MELHOR_ENVIO_ACCESS_TOKEN_SANDBOX
 		     )
 		    .addHeader("User-Agent", "jlcb.lojavirtual@gmail.com")
 		    .build();
@@ -731,13 +731,13 @@ public class VendaCompraLojaVirtualController {
 		okhttp3.RequestBody bodyImpressaoDeEtiquetas = okhttp3.RequestBody.create(mediaTypeImpressaoDeEtiquetas, "{\"mode\":\"private\",\"orders\":[\"" + idEtiquetaEnvioFrete + "\"]}");
 		
 		okhttp3.Request requestImpressaoDeEtiquetas = new okhttp3.Request.Builder()
-		    .url(MelhorEnvioFreteConstants.URL_SANDABOX + "/api/v2/me/shipment/print")
+		    .url(MelhorEnvioFreteConstants.MELHOR_ENVIO_URL_SANDABOX + "/api/v2/me/shipment/print")
 		    .post(bodyImpressaoDeEtiquetas)
 		    .addHeader("Accept", "application/json")
 		    .addHeader("Content-Type", "application/json")
 		    .addHeader(
 		        "Authorization", "Bearer " 
-		        + MelhorEnvioFreteConstants.ACCESS_TOKEN_SANDBOX
+		        + MelhorEnvioFreteConstants.MELHOR_ENVIO_ACCESS_TOKEN_SANDBOX
 		    )
 		    .addHeader("User-Agent", "jlcb.lojavirtual@gmail.com")
 		    .build();
@@ -766,13 +766,13 @@ public class VendaCompraLojaVirtualController {
 		okhttp3.RequestBody bodyRastreio = okhttp3.RequestBody.create(mediaTypeRastreio , "{\"orders\":[\"" + idEtiquetaEnvioFrete + "\"]}");
 		
 		okhttp3.Request requestRastreio = new okhttp3.Request.Builder()
-		    .url(MelhorEnvioFreteConstants.URL_SANDABOX + "/api/v2/me/shipment/tracking")
+		    .url(MelhorEnvioFreteConstants.MELHOR_ENVIO_URL_SANDABOX + "/api/v2/me/shipment/tracking")
 		    .post(bodyRastreio)
 		    .addHeader("Accept", "application/json")
 		    .addHeader("Content-type", "application/json")
 		    .addHeader(
 		    	"Authorization", "Bearer " 
-		        + MelhorEnvioFreteConstants.ACCESS_TOKEN_SANDBOX
+		        + MelhorEnvioFreteConstants.MELHOR_ENVIO_ACCESS_TOKEN_SANDBOX
 		    )
 		    .addHeader("User-Agent", "jlcb.lojavirtual@gmail.com")
 		    .build();
@@ -840,13 +840,13 @@ public class VendaCompraLojaVirtualController {
 		okhttp3.MediaType mediaType = okhttp3.MediaType.parse("application/json");
 		okhttp3.RequestBody body = okhttp3.RequestBody.create(mediaType, "{\n\"order\":{\n\"id\":\"" + etiquetaId + "\",\n\"reason_id\":\"" + 2 + "\",\n\"description\":\"" + descricao + "\"\n}\n}");
 		okhttp3.Request request = new okhttp3.Request.Builder()
-	      .url(MelhorEnvioFreteConstants.URL_SANDABOX + "/api/v2/me/shipment/cancel")
+	      .url(MelhorEnvioFreteConstants.MELHOR_ENVIO_URL_SANDABOX + "/api/v2/me/shipment/cancel")
 		  .post(body)
 		  .addHeader("Accept", "application/json")
 		  .addHeader("Content-Type", "application/json")
 		  .addHeader(
 			  "Authorization", "Bearer " 
-		      + MelhorEnvioFreteConstants.ACCESS_TOKEN_SANDBOX
+		      + MelhorEnvioFreteConstants.MELHOR_ENVIO_ACCESS_TOKEN_SANDBOX
 		  )
 		  .addHeader("User-Agent", "jlcb.lojavirtual@gmail.com")
 		  .build();

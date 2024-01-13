@@ -18,15 +18,15 @@ public class AsaasPagamentoService {
 	 * @throws Exception
 	 */
 	public String criarChavePix() throws Exception {
-		Client client = new HostIgnoringSSLClient(AsaasPagamentoConstants.URL_SANDBOX)
+		Client client = new HostIgnoringSSLClient(AsaasPagamentoConstants.ASAAS_URL_SANDBOX)
                 .createUnsecuredHttpClient();
 		
-		WebResource webResource = client.resource(AsaasPagamentoConstants.URL_SANDBOX + "pix/addressKeys");
+		WebResource webResource = client.resource(AsaasPagamentoConstants.ASAAS_URL_SANDBOX + "pix/addressKeys");
 		
 		ClientResponse clientResponse = webResource
 			    .accept("application/json;charset=UTF-8")
 			    .header("Content-Type", "application/json")
-			    .header("access_token", AsaasPagamentoConstants.ACCESS_TOKEN_SANDBOX)
+			    .header("access_token", AsaasPagamentoConstants.ASAAS_ACCESS_TOKEN_SANDBOX)
 			    .post(ClientResponse.class, "{\"type\":\"EVP\"}");
 		
 		String stringRetorno = clientResponse.getEntity(String.class);

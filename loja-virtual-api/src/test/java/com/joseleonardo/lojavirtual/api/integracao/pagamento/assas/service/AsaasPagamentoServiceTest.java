@@ -1,4 +1,4 @@
-package com.joseleonardo.lojavirtual.api.pagamento.assas.service;
+package com.joseleonardo.lojavirtual.api.integracao.pagamento.assas.service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
