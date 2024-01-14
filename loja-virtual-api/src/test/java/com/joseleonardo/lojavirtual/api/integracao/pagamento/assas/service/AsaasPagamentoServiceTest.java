@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Profile;
 
 import com.joseleonardo.lojavirtual.LojaVirtualApiApplication;
-import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.criar_novo_cliente.AsaasPagamentoCriarNovoClienteDTO;
+import com.joseleonardo.lojavirtual.api.dto.venda.VendaCobrancaDTO;
 import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.service.AsaasPagamentoService;
 
 @Profile("test")
@@ -19,14 +19,28 @@ public class AsaasPagamentoServiceTest {
 	private AsaasPagamentoService asaasPagamentoService;
 	
 	@Test
-	public void testCriarNovoCliente() throws Exception {
-		AsaasPagamentoCriarNovoClienteDTO novoClienteDTO = new AsaasPagamentoCriarNovoClienteDTO();
-		novoClienteDTO.setName("José Leonardo");
-		novoClienteDTO.setCpfCnpj("07808516090");
-		novoClienteDTO.setEmail("leoprogamer57@gmail.com");
-		novoClienteDTO.setMobilePhone("(44) 99786-4523");
+	public void testCriarNovaCobranca() throws Exception {
+		VendaCobrancaDTO vendaCobrancaDTO = new VendaCobrancaDTO();
+		vendaCobrancaDTO.setNomeCliente("José Leonardo");
+		vendaCobrancaDTO.setCpfCnpjCliente("07808516090");
+		vendaCobrancaDTO.setEmailCliente("leoprogamer57@gmail.com");
+		vendaCobrancaDTO.setTelefoneCliente("(44) 99786-4523");
+		vendaCobrancaDTO.setIdVenda(37L);
 		
-		String idCliente = asaasPagamentoService.criarNovoCliente(novoClienteDTO);
+		String retorno = asaasPagamentoService.criarNovaCobranca(vendaCobrancaDTO);
+		
+		System.out.println(retorno);
+	}
+	
+	@Test
+	public void testBuscarOuCriarNovoCliente() throws Exception {
+		VendaCobrancaDTO vendaCobrancaDTO = new VendaCobrancaDTO();
+		vendaCobrancaDTO.setNomeCliente("José Leonardo");
+		vendaCobrancaDTO.setCpfCnpjCliente("07808516090");
+		vendaCobrancaDTO.setEmailCliente("leoprogamer57@gmail.com");
+		vendaCobrancaDTO.setTelefoneCliente("(44) 99786-4523");
+		
+		String idCliente = asaasPagamentoService.buscarOuCriarNovoCliente(vendaCobrancaDTO);
 		
 		assertEquals("cus_000005847814", idCliente);
 	}

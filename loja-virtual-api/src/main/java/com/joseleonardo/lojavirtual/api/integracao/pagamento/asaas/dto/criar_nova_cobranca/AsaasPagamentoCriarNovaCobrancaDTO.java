@@ -1,8 +1,6 @@
 package com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.criar_nova_cobranca;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AsaasPagamentoCriarNovaCobrancaDTO implements Serializable {
 
@@ -30,7 +28,7 @@ public class AsaasPagamentoCriarNovaCobrancaDTO implements Serializable {
 	private String externalReference;
 	
 	// Número de parcelas (somente no caso de cobrança parcelada)
-	private String installmentCount;
+	private int installmentCount;
 	
 	/*
 	 * Informe o valor total de uma cobrança que será parcelada 
@@ -43,7 +41,7 @@ public class AsaasPagamentoCriarNovaCobrancaDTO implements Serializable {
 	 * Valor de cada parcela (somente no caso de cobrança parcelada).
 	 * Envie este campo em caso de querer definir o valor de cada parcela.
 	 */
-	private String installmentValue;
+	private float installmentValue;
 	
 	// Informações de desconto
 	private AsaasPagamentoCriarNovaCobrancaDiscountDTO discount = new AsaasPagamentoCriarNovaCobrancaDiscountDTO();
@@ -56,12 +54,6 @@ public class AsaasPagamentoCriarNovaCobrancaDTO implements Serializable {
 	
 	// Define se a cobrança será enviada via Correios
 	private boolean postalService = false;
-	
-	// Configurações do split
-	private List<AsaasPagamentoCriarNovaCobrancaSplitDTO> split = new ArrayList<>();
-	
-	// Informações de redirecionamento automático após pagamento na tela de fatura
-	private AsaasPagamentoCriarNovaCobrancaCallbackDTO callback = new AsaasPagamentoCriarNovaCobrancaCallbackDTO();
 
 	public String getCustomer() {
 		return customer;
@@ -119,11 +111,11 @@ public class AsaasPagamentoCriarNovaCobrancaDTO implements Serializable {
 		this.externalReference = externalReference;
 	}
 
-	public String getInstallmentCount() {
+	public int getInstallmentCount() {
 		return installmentCount;
 	}
-
-	public void setInstallmentCount(String installmentCount) {
+	
+	public void setInstallmentCount(int installmentCount) {
 		this.installmentCount = installmentCount;
 	}
 
@@ -135,11 +127,11 @@ public class AsaasPagamentoCriarNovaCobrancaDTO implements Serializable {
 		this.totalValue = totalValue;
 	}
 
-	public String getInstallmentValue() {
+	public float getInstallmentValue() {
 		return installmentValue;
 	}
-
-	public void setInstallmentValue(String installmentValue) {
+	
+	public void setInstallmentValue(float installmentValue) {
 		this.installmentValue = installmentValue;
 	}
 
@@ -173,22 +165,6 @@ public class AsaasPagamentoCriarNovaCobrancaDTO implements Serializable {
 
 	public void setPostalService(boolean postalService) {
 		this.postalService = postalService;
-	}
-
-	public List<AsaasPagamentoCriarNovaCobrancaSplitDTO> getSplit() {
-		return split;
-	}
-
-	public void setSplit(List<AsaasPagamentoCriarNovaCobrancaSplitDTO> split) {
-		this.split = split;
-	}
-
-	public AsaasPagamentoCriarNovaCobrancaCallbackDTO getCallback() {
-		return callback;
-	}
-
-	public void setCallback(AsaasPagamentoCriarNovaCobrancaCallbackDTO callback) {
-		this.callback = callback;
 	}
 	
 }
