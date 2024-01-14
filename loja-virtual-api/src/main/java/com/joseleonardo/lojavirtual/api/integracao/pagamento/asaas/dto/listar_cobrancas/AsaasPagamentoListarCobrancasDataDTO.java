@@ -17,6 +17,9 @@ public class AsaasPagamentoListarCobrancasDataDTO implements Serializable {
 	// Tipo do objeto
 	private String object;
 	
+	// Identificador único da cobrança no Asaas
+	private String id;
+	
     // Identificador único do cliente ao qual a cobrança pertence
     private String customer;
 
@@ -131,6 +134,14 @@ public class AsaasPagamentoListarCobrancasDataDTO implements Serializable {
 
 	public void setObject(String object) {
 		this.object = object;
+	}
+	
+	public String getId() {
+		return id;
+	}
+	
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getCustomer() {

@@ -1,6 +1,8 @@
 package com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.service;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -9,14 +11,21 @@ import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.joseleonardo.lojavirtual.api.dto.venda.VendaCobrancaDTO;
 import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.constants.AsaasPagamentoConstants;
 import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.criar_nova_cobranca.AsaasPagamentoCriarNovaCobrancaDTO;
 import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.criar_novo_cliente.AsaasPagamentoCriarNovoClienteDTO;
+import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.listar_cobrancas.AsaasPagamentoListarCobrancasDTO;
+import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.listar_cobrancas.AsaasPagamentoListarCobrancasDataDTO;
+import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.pix.AsaasPagamentoPixQRCodeDTO;
 import com.joseleonardo.lojavirtual.exception.LojaVirtualException;
+import com.joseleonardo.lojavirtual.model.AsaasBoletoPix;
 import com.joseleonardo.lojavirtual.model.VendaCompraLojaVirtual;
+import com.joseleonardo.lojavirtual.repository.BoletoAsaasRepository;
 import com.joseleonardo.lojavirtual.repository.VendaCompraLojaVirtualRepository;
 import com.joseleonardo.lojavirtual.ssl.HostIgnoringSSLClient;
 import com.sun.jersey.api.client.Client;
@@ -28,6 +37,9 @@ public class AsaasPagamentoService {
 	
 	@Autowired
 	private VendaCompraLojaVirtualRepository vendaCompraLojaVirtualRepository;
+	
+	@Autowired
+	private BoletoAsaasRepository boletoAsaasRepository;
 	
 	public String criarNovaCobranca(VendaCobrancaDTO vendaCobrancaDTO) throws Exception {
 	    // Buscando a venda com base no ID
@@ -58,11 +70,14 @@ public class AsaasPagamentoService {
 	    // Definindo a data de vencimento para 7 dias
 	    Calendar dataVencimento = Calendar.getInstance();
 	    dataVencimento.add(Calendar.DAY_OF_MONTH, 7);
-	    novaCobrancaDTO.setDueDate(new SimpleDateFormat("yyyy-MM-dd").format(dataVencimento.getTime()));
+	    
+	    novaCobrancaDTO.setDueDate(
+	        new SimpleDateFormat("yyyy-MM-dd").format(dataVencimento.getTime())
+	    );
 
 	    // Descrevendo a cobrança
 	    novaCobrancaDTO.setDescription(
-	            "Pix ou Boleto gerado para a cobrança de código: " + vendaCompraLojaVirtual.getId()
+	        "Pix ou Boleto gerado para a cobrança de código: " + vendaCompraLojaVirtual.getId()
 	    );
 
 	    // Configurando outros detalhes da cobrança
@@ -94,8 +109,130 @@ public class AsaasPagamentoService {
 
 	    // Fechando a resposta da API Asaas
 	    clientResponse.close();
+	    
+	    // Criando um LinkedHashMap para armazenar os dados da resposta da API
+	    LinkedHashMap<String, Object> parser = new JSONParser(respostaApi).parseObject();
+	    
+	    // Extraindo o valor da chave "installment" do LinkedHashMap
+	    String installment = parser.get("installment").toString();
+	    
+	    // Criando um cliente HTTP para listar cobranças, ignorando certificados SSL
+	    Client clientListarCobrancas = new HostIgnoringSSLClient(
+	        AsaasPagamentoConstants.ASAAS_API_BASE_URL_SANDBOX
+	    ).createUnsecuredHttpClient();
+	    
+	    // Criando um recurso da API Asaas para listar cobranças com base no id da parcela
+	    WebResource webResourceListarCobrancas = clientListarCobrancas.resource(
+	        AsaasPagamentoConstants.ASAAS_API_BASE_URL_SANDBOX + "payments?installment=" + installment
+	    );
+	    
+	    // Enviando uma requisição GET para a API Asaas para obter cobranças com a parcela específica
+	    ClientResponse clientResponseListarCobrancas = webResourceListarCobrancas
+            .accept("application/json;charset=UTF-8")
+            .header("Content-Type", "application/json")
+            .header("access_token", AsaasPagamentoConstants.ASAAS_ACCESS_TOKEN_SANDBOX)
+            .get(ClientResponse.class);
 
-	    return respostaApi;
+	    // Obtendo a resposta da API Asaas para listar cobranças com a parcela específica
+	    String respostaApiListarCobrancas = clientResponseListarCobrancas.getEntity(String.class);
+	    
+	    // Criando um objeto ObjectMapper para realizar a conversão entre JSON e objetos Java
+	    ObjectMapper objectMapper = new ObjectMapper();
+	    
+	    // Habilitando a configuração para aceitar um valor único como array ao desserializar JSON
+	    objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+	    objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+	    
+	    // Lendo a resposta da API Asaas e convertendo para um objeto AsaasPagamentoListarCobrancasDTO
+	    AsaasPagamentoListarCobrancasDTO cobrancasDTO = objectMapper.readValue(
+	        respostaApiListarCobrancas, new TypeReference<AsaasPagamentoListarCobrancasDTO>() {}
+	    );
+	    
+	    // Inicializando uma lista para armazenar objetos BoletoAsaas
+	    List<AsaasBoletoPix> boletosAsaas = new ArrayList<>();
+	    
+	    // Inicializando a variável de recorrência
+	    int recorrencia = 1;
+	    
+	    // Iterando sobre as cobranças retornadas pela API Asaas
+	    for (AsaasPagamentoListarCobrancasDataDTO data : cobrancasDTO.getData()) {
+	        // Criando um novo objeto BoletoAsaas para cada cobrança
+	    	AsaasBoletoPix boletoAsaas = new AsaasBoletoPix();
+	    	
+	        // Definindo os atributos do objeto BoletoAsaas com dados da cobrança
+	    	boletoAsaas.setIdCobrancaAsaas(data.getId());
+	    	boletoAsaas.setUrlFatura(data.getInvoiceUrl());
+	    	
+	        // Convertendo a data de vencimento para o formato desejado
+	    	boletoAsaas.setDataVencimento(
+	    	    new SimpleDateFormat("yyyy-MM-dd").format(
+	    	        new SimpleDateFormat("yyyy-MM-dd").parse(data.getDueDate())
+	    	    )
+	    	);
+	    	
+	        // Configurando os atributos do objeto BoletoAsaas relacionados ao valor e recorrência
+	    	boletoAsaas.setValor(new BigDecimal(data.getValue()));
+	    	boletoAsaas.setRecorrencia(recorrencia);
+	    	
+	        // Obtendo informações do QR Code Pix para a cobrança atual
+	    	AsaasPagamentoPixQRCodeDTO pixQrCodeDTO = obterQrCodePix(data.getId());
+	    	boletoAsaas.setPixQrCodeImagem(pixQrCodeDTO.getEncodedImage());
+	    	boletoAsaas.setPixQrCodeCopiaCola(pixQrCodeDTO.getPayload());
+	    	boletoAsaas.setPixQrCodeExpiracao(pixQrCodeDTO.getExpirationDate());
+	    	
+	        // Configurando informações adicionais relacionadas à venda/compra e empresa
+	    	boletoAsaas.setVendaCompraLojaVirtual(vendaCompraLojaVirtual);
+	    	boletoAsaas.setEmpresa(vendaCompraLojaVirtual.getEmpresa());
+	    	
+	        // Adicionando o objeto BoletoAsaas à lista
+	    	boletosAsaas.add(boletoAsaas);
+	    	
+	        // Incrementando o número de recorrência
+	    	recorrencia++;
+	    }
+	    
+	    // Salvando todos os boletos na base de dados
+	    boletoAsaasRepository.saveAllAndFlush(boletosAsaas);
+	    
+	    // Retornando a URL do primeiro boleto da lista
+	    return boletosAsaas.get(0).getUrlFatura();
+	}
+	
+	public AsaasPagamentoPixQRCodeDTO obterQrCodePix(String idCobranca) throws Exception {
+	    // Criando um cliente HTTP ignorando SSL
+	    Client client = new HostIgnoringSSLClient(AsaasPagamentoConstants.ASAAS_API_BASE_URL_SANDBOX)
+	        .createUnsecuredHttpClient();
+
+	    // Definindo o recurso da API da Asaas para Obter QR Code para pagamentos via Pix
+	    WebResource webResource = client.resource(
+	          AsaasPagamentoConstants.ASAAS_API_BASE_URL_SANDBOX 
+	        + "payments/" + idCobranca + "/pixQrCode"
+	    );
+
+	    // Enviando uma requisição GET para a API Asaas
+	    ClientResponse clientResponse = webResource
+	            .accept("application/json;charset=UTF-8")
+	            .header("Content-Type", "application/json")
+	            .header("access_token", AsaasPagamentoConstants.ASAAS_ACCESS_TOKEN_SANDBOX)
+	            .get(ClientResponse.class);
+
+	    // Obtendo a resposta da API
+	    String respostaApi = clientResponse.getEntity(String.class);
+
+	    // Fechando a resposta da API Asaas
+	    clientResponse.close();
+	    
+	    // Criando um objeto DTO para armazenar os dados do QR Code
+	    AsaasPagamentoPixQRCodeDTO pixQrCodeDTO = new AsaasPagamentoPixQRCodeDTO();
+	    
+	    // Configurando os atributos do objeto DTO com os do JSON retornado
+	    LinkedHashMap<String, Object> parser = new JSONParser(respostaApi).parseObject();
+	    pixQrCodeDTO.setEncodedImage(parser.get("encodedImage").toString());
+	    pixQrCodeDTO.setPayload(parser.get("payload").toString());
+	    pixQrCodeDTO.setExpirationDate(parser.get("expirationDate").toString());
+	    
+	    // Retornando o objeto DTO
+	    return pixQrCodeDTO;
 	}
 
 	@SuppressWarnings("unchecked")
