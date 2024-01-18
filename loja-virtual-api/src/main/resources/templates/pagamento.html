@@ -251,6 +251,20 @@
               style="font-size: 19px; height: 30px; width: 100%"></span>
           </div>
         </div>
+        
+        <hr width="96%" style="color: #726868; border-top: 1px solid #726868;">
+        
+        <div class="form-row">
+          <div class="form-group col-md-6" style="margin-top: 8px;">
+            <label>Itens adicionados</label>
+            <div th:each="item : ${venda.itensVendaLojaDTO}">
+              <span 
+                th:text="@{${item.produto.nome} + ' - Quantidade: ' + ${item.quantidade}}" 
+                style="height: 15px; width: 100%; font-size: 11px">
+              </span>
+            </div>
+          </div>
+        </div>
       </form>
     </div>
     

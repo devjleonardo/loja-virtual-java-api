@@ -20,10 +20,9 @@ public class PagamentoController {
 	public ModelAndView pagamento(@PathVariable(value = "idVenda", required = false) Long idVenda)  {
 		ModelAndView modelAndView = new ModelAndView("pagamento");
 		
-		VendaCompraLojaVirtualDTO vendaCompraLojaVirtualDTO;
-		
 		try {
-			vendaCompraLojaVirtualDTO = vendaCompraLojaVirtualService.buscarVendaCompraPorId(idVenda);
+			VendaCompraLojaVirtualDTO vendaCompraLojaVirtualDTO = 
+					vendaCompraLojaVirtualService.buscarVendaCompraPorId(idVenda);
 			
 			modelAndView.addObject("venda", vendaCompraLojaVirtualDTO);
 		} catch (LojaVirtualException e) {
