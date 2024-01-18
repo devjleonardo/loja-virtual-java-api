@@ -71,7 +71,7 @@
             <input 
               type="text" 
               class="form-control" 
-              id="nome-cartao" 
+              id="nome-titular-cartao" 
               placeholder="João da Silva"
               style="height: 40px" 
               required="required">
@@ -187,11 +187,11 @@
           </div>
           
           <div class="form-group col-md-4">
-            <label for="rua-cobranca">Rua:</label>
+            <label for="rua-endereco-cobranca">Rua:</label>
             <input 
               type="text" 
               class="form-control" 
-              id="rua-cobranca" 
+              id="rua-endereco-cobranca" 
               style="height: 40px" 
               required="required">
           </div>
@@ -234,7 +234,7 @@
         <div class="form-row">
           <div class="form-group col-md-12">
             <input 
-              onclick="realizarPagamento()"
+              onclick="realizarPagamento();"
               type="button" 
               class="btn btn-primary btn-lg" 
               value="Realizar Pagamento" 
@@ -287,20 +287,20 @@
 	  $(document).ready(function() {
         
 		$('#numero-cartao').mask('0000 0000 0000 0000', {reverse: true});
-		$('#cpf').mask('000.000.000-00', {reverse: true});
-		$('#cep').mask('00000-000', {reverse: true});
-		$('#cvv').mask('000', {reverse: true});
+		$('#cpf-titular-cartao').mask('000.000.000-00', {reverse: true});
+		$('#cep-endereco-cobranca').mask('00000-000', {reverse: true});
+		$('#cvv-cartao').mask('000', {reverse: true});
 		  
 	    function limpa_formulário_cep() {
 	      // Limpa valores do formulário de cep.
-	      $("#rua").val("");
-	      $("#numero").val("");
-	      $("#estado").val("");
-	      $("#cidade").val("");
+	      $("#rua-endereco-cobranca").val("");
+	      $("#numero-endereco-cobranca").val("");
+	      $("#estado-endereco-cobranca").val("");
+	      $("#cidade-endereco-cobranca").val("");
 	    }
 	
 	    // Quando o campo cep perde o foco.
-	    $("#cep").blur(function() {
+	    $("#cep-endereco-cobranca").blur(function() {
 	
 	      // Nova variável "cep" somente com dígitos.
 	      var cep = $(this).val().replace(/\D/g, '');
@@ -315,18 +315,18 @@
 	        if(validacep.test(cep)) {
 	
 	          // Preenche os campos com "..." enquanto consulta webservice.
-	      	  $("#rua").val("...");
-	          $("#estado").val("...");
-	          $("#cidade").val("...");
+	      	  $("#rua-endereco-cobranca").val("...");
+	          $("#estado-endereco-cobranca").val("...");
+	          $("#cidade-endereco-cobranca").val("...");
 	
 	          // Consulta o webservice viacep.com.br/
 	          $.getJSON("https://viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
 	
 	            if (!("erro" in dados)) {
 	              // Atualiza os campos com os valores da consulta.
-	              $("#rua").val(dados.logradouro);
-	              $("#estado").val(dados.uf);
-	              $("#cidade").val(dados.localidade);
+	              $("#rua-endereco-cobranca").val(dados.logradouro);
+	              $("#estado-endereco-cobranca").val(dados.uf);
+	              $("#cidade-endereco-cobranca").val(dados.localidade);
 	            } // end if.
 	            else {
 	              // CEP pesquisado não foi encontrado.
@@ -365,7 +365,74 @@
 		  var numeroEnderecoCobranca = $('#numero-endereco-cobranca').val();
 		  var estadoEnderecoCobranca = $('#estado-endereco-cobranca').val();
 		  var cidadeEnderecoCobranca = $('#cidade-endereco-cobranca').val();
+		  
+		  if (numeroCartao.trim() == '') {
+			  alert('Informe o número do cartão de crédito.');
+			  
+			  return;
+		  }
+		  
+		  if (nomeTitularCartao.trim() == '') {
+			  alert('Informe o nome do titular escrito no cartão de crédito.');
+			  
+			  return;
+		  }
+		  
+		  if (cpfTitularCartao.trim() == '') {
+			  alert('Informe o CPF do titular cartão de crédito.');
+			  
+			  return;
+		  }
+		  
+		  if (mesValidadeCartao.trim() == '') {
+			  alert('Informe o mês de validade do cartão de crédito.');
+			  
+			  return;
+		  }
+		  
+		  if (anoValidadeCartao.trim() == '') {
+			  alert('Informe o ano de validade do cartão de crédito.');
+			  
+			  return;
+		  }
+		  
+		  if (cvvCartao.trim() == '') {
+			  alert('Informe o CVV do cartão de crédito.');
+			  
+			  return;
+		  }
+		  
+		  if (cepEnderecoCobranca.trim() == '') {
+			  alert('Informe o CEP do endereço de cobrança do cartão de crédito.');
+			  
+			  return;
+		  }
+		  
+		  if (ruaEnderecoCobranca.trim() == '') {
+			  alert('Informe a rua do endereço de cobrança do cartão de crédito.');
+			  
+			  return;
+		  }
+		  
+		  if (numeroEnderecoCobranca.trim() == '') {
+			  alert('Informe o número do endereço de cobrança do cartão de crédito.');
+			  
+			  return;
+		  }
+		  
+		  if (estadoEnderecoCobranca.trim() == '') {
+			  alert('Informe o estado do endereço de cobrança do cartão de crédito.');
+			  
+			  return;
+		  }
+		  
+		  if (cidadeEnderecoCobranca.trim() == '') {
+			  alert('Informe a cidade do endereço de cobrança do cartão de crédito.');
+			  
+			  return;
+		  }
 	  }
+	  
     </script>
   </body>
 </html>
