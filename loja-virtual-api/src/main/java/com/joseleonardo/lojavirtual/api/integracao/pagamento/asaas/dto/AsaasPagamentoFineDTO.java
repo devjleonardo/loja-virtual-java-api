@@ -1,8 +1,8 @@
-package com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.criar_nova_cobranca;
+package com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto;
 
 import java.io.Serializable;
 
-public class AsaasPagamentoCriarNovaCobrancaFineDTO implements Serializable {
+public class AsaasPagamentoFineDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

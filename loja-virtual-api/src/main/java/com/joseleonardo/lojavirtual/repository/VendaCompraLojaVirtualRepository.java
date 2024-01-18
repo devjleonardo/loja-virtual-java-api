@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,14 @@ import com.joseleonardo.lojavirtual.model.VendaCompraLojaVirtual;
 @Transactional
 public interface VendaCompraLojaVirtualRepository 
         extends JpaRepository<VendaCompraLojaVirtual, Long> {
+	
+	@Transactional
+	@Modifying(flushAutomatically = true)
+	@Query(nativeQuery = true,
+	       value = "UPDATE venda_compra_loja_virtual "
+	       		 + "SET status_venda_compra_loja_virtual = 'FINALIZADA' "
+	       		 + "WHERE id = ?1")
+	void marcarVendaCompraLojaVirtualComoFinalizadaPorId(Long id);
 	
 	@Query("SELECT vclv FROM VendaCompraLojaVirtual vclv "
 		 + "WHERE vclv.id = ?1 AND vclv.excluido = false")

@@ -17,15 +17,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.joseleonardo.lojavirtual.api.dto.venda.VendaCobrancaDTO;
 import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.constants.AsaasPagamentoConstants;
-import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.criar_nova_cobranca.AsaasPagamentoCriarNovaCobrancaDTO;
+import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.cobrancas.criar_nova_cobranca.AsaasPagamentoCriarCobrancaDTO;
+import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.cobrancas.listar_cobrancas.AsaasPagamentoListarCobrancasDTO;
+import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.cobrancas.listar_cobrancas.AsaasPagamentoListarCobrancasDataDTO;
+import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.cobrancas.obter_qr_code_pix.AsaasPagamentoPixQRCodeDTO;
 import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.criar_novo_cliente.AsaasPagamentoCriarNovoClienteDTO;
-import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.listar_cobrancas.AsaasPagamentoListarCobrancasDTO;
-import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.listar_cobrancas.AsaasPagamentoListarCobrancasDataDTO;
-import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.pix.AsaasPagamentoPixQRCodeDTO;
 import com.joseleonardo.lojavirtual.exception.LojaVirtualException;
 import com.joseleonardo.lojavirtual.model.AsaasBoletoPix;
 import com.joseleonardo.lojavirtual.model.VendaCompraLojaVirtual;
-import com.joseleonardo.lojavirtual.repository.BoletoAsaasRepository;
+import com.joseleonardo.lojavirtual.repository.AsaasBoletoPixRepository;
 import com.joseleonardo.lojavirtual.repository.VendaCompraLojaVirtualRepository;
 import com.joseleonardo.lojavirtual.ssl.HostIgnoringSSLClient;
 import com.sun.jersey.api.client.Client;
@@ -39,7 +39,7 @@ public class AsaasPagamentoService {
 	private VendaCompraLojaVirtualRepository vendaCompraLojaVirtualRepository;
 	
 	@Autowired
-	private BoletoAsaasRepository boletoAsaasRepository;
+	private AsaasBoletoPixRepository boletoAsaasRepository;
 	
 	public String criarNovaCobranca(VendaCobrancaDTO vendaCobrancaDTO) throws Exception {
 	    // Buscando a venda com base no ID
@@ -54,7 +54,7 @@ public class AsaasPagamentoService {
 	    }
 
 	    // Criando um DTO para a nova cobrança
-	    AsaasPagamentoCriarNovaCobrancaDTO novaCobrancaDTO = new AsaasPagamentoCriarNovaCobrancaDTO();
+	    AsaasPagamentoCriarCobrancaDTO novaCobrancaDTO = new AsaasPagamentoCriarCobrancaDTO();
 
 	    // Configurando o cliente associado à cobrança (buscando ou criando)
 	    novaCobrancaDTO.setCustomer(buscarOuCriarNovoCliente(vendaCobrancaDTO));
@@ -90,19 +90,19 @@ public class AsaasPagamentoService {
 
 	    // Criando um cliente HTTP ignorando SSL
 	    Client client = new HostIgnoringSSLClient(AsaasPagamentoConstants.ASAAS_API_BASE_URL_SANDBOX)
-	            .createUnsecuredHttpClient();
+	        .createUnsecuredHttpClient();
 
 	    // Definindo o recurso da API da Asaas para criar uma nova cobrança
 	    WebResource webResource = client.resource(
-	            AsaasPagamentoConstants.ASAAS_API_BASE_URL_SANDBOX + "payments"
+	        AsaasPagamentoConstants.ASAAS_API_BASE_URL_SANDBOX + "payments"
 	    );
 
 	    // Enviando uma requisição POST para a API Asaas
 	    ClientResponse clientResponse = webResource
-	            .accept("application/json;charset=UTF-8")
-	            .header("Content-Type", "application/json")
-	            .header("access_token", AsaasPagamentoConstants.ASAAS_ACCESS_TOKEN_SANDBOX)
-	            .post(ClientResponse.class, json);
+	        .accept("application/json;charset=UTF-8")
+	        .header("Content-Type", "application/json")
+	        .header("access_token", AsaasPagamentoConstants.ASAAS_ACCESS_TOKEN_SANDBOX)
+	        .post(ClientResponse.class, json);
 
 	    // Obtendo a resposta da API
 	    String respostaApi = clientResponse.getEntity(String.class);
@@ -141,14 +141,16 @@ public class AsaasPagamentoService {
 	    
 	    // Habilitando a configuração para aceitar um valor único como array ao desserializar JSON
 	    objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
-	    objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+	    
+	    // Desabilita a falha ao encontrar propriedades desconhecidas durante a desserialização.
+		objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 	    
 	    // Lendo a resposta da API Asaas e convertendo para um objeto AsaasPagamentoListarCobrancasDTO
 	    AsaasPagamentoListarCobrancasDTO cobrancasDTO = objectMapper.readValue(
 	        respostaApiListarCobrancas, new TypeReference<AsaasPagamentoListarCobrancasDTO>() {}
 	    );
 	    
-	    // Inicializando uma lista para armazenar objetos BoletoAsaas
+	    // Inicializando uma lista para armazenar objetos AsaasBoletoPix
 	    List<AsaasBoletoPix> boletosAsaas = new ArrayList<>();
 	    
 	    // Inicializando a variável de recorrência
@@ -211,10 +213,10 @@ public class AsaasPagamentoService {
 
 	    // Enviando uma requisição GET para a API Asaas
 	    ClientResponse clientResponse = webResource
-	            .accept("application/json;charset=UTF-8")
-	            .header("Content-Type", "application/json")
-	            .header("access_token", AsaasPagamentoConstants.ASAAS_ACCESS_TOKEN_SANDBOX)
-	            .get(ClientResponse.class);
+	        .accept("application/json;charset=UTF-8")
+	        .header("Content-Type", "application/json")
+	        .header("access_token", AsaasPagamentoConstants.ASAAS_ACCESS_TOKEN_SANDBOX)
+	        .get(ClientResponse.class);
 
 	    // Obtendo a resposta da API
 	    String respostaApi = clientResponse.getEntity(String.class);
@@ -276,7 +278,7 @@ public class AsaasPagamentoService {
 			novoClienteDTO.setMobilePhone(vendaCobrancaDTO.getTelefoneCliente());
 	    	
 	        // Convertendo o objeto DTO para formato JSON
-	        String json = new ObjectMapper().writeValueAsString(vendaCobrancaDTO);
+	        String json = new ObjectMapper().writeValueAsString(novoClienteDTO);
 	        
 	        // Criando um cliente HTTP ignorando SSL
 	        Client clientNovoCliente = new HostIgnoringSSLClient(

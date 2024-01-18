@@ -2,6 +2,8 @@ package com.joseleonardo.lojavirtual.api.dto.venda;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class VendaCobrancaDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -16,6 +18,7 @@ public class VendaCobrancaDTO implements Serializable {
 
 	private String telefoneCliente;
 
+	@JsonProperty(value = "de" )
 	private Long idVenda;
 
 	public String getDescricaoCobranca() {

@@ -1,4 +1,4 @@
-package com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.pix;
+package com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.cobrancas.obter_qr_code_pix;
 
 import java.io.Serializable;
 

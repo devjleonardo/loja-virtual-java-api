@@ -1,4 +1,4 @@
-package com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.listar_cobrancas;
+package com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.cobrancas.listar_cobrancas;
 
 import java.io.Serializable;
 import java.util.ArrayList;

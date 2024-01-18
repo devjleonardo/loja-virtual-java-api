@@ -1,8 +1,12 @@
-package com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.criar_nova_cobranca;
+package com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.cobrancas.criar_nova_cobranca;
 
 import java.io.Serializable;
 
-public class AsaasPagamentoCriarNovaCobrancaDTO implements Serializable {
+import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.AsaasPagamentoFineDTO;
+import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.AsaasPagamentoInterestDTO;
+import com.joseleonardo.lojavirtual.api.integracao.pagamento.asaas.dto.AsaasPagamentoDiscountDTO;
+
+public class AsaasPagamentoCriarCobrancaDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -44,13 +48,13 @@ public class AsaasPagamentoCriarNovaCobrancaDTO implements Serializable {
 	private float installmentValue;
 	
 	// Informações de desconto
-	private AsaasPagamentoCriarNovaCobrancaDiscountDTO discount = new AsaasPagamentoCriarNovaCobrancaDiscountDTO();
+	private AsaasPagamentoDiscountDTO discount = new AsaasPagamentoDiscountDTO();
 	
 	// Informações de juros para pagamento após o vencimento
-	private AsaasPagamentoCriarNovaCobrancaInterestDTO interest = new AsaasPagamentoCriarNovaCobrancaInterestDTO();
+	private AsaasPagamentoInterestDTO interest = new AsaasPagamentoInterestDTO();
 
 	// Informações de multa para pagamento após o vencimento
-	private AsaasPagamentoCriarNovaCobrancaFineDTO fine = new AsaasPagamentoCriarNovaCobrancaFineDTO();
+	private AsaasPagamentoFineDTO fine = new AsaasPagamentoFineDTO();
 	
 	// Define se a cobrança será enviada via Correios
 	private boolean postalService = false;
@@ -135,27 +139,27 @@ public class AsaasPagamentoCriarNovaCobrancaDTO implements Serializable {
 		this.installmentValue = installmentValue;
 	}
 
-	public AsaasPagamentoCriarNovaCobrancaDiscountDTO getDiscount() {
+	public AsaasPagamentoDiscountDTO getDiscount() {
 		return discount;
 	}
 
-	public void setDiscount(AsaasPagamentoCriarNovaCobrancaDiscountDTO discount) {
+	public void setDiscount(AsaasPagamentoDiscountDTO discount) {
 		this.discount = discount;
 	}
 
-	public AsaasPagamentoCriarNovaCobrancaInterestDTO getInterest() {
+	public AsaasPagamentoInterestDTO getInterest() {
 		return interest;
 	}
 
-	public void setInterest(AsaasPagamentoCriarNovaCobrancaInterestDTO interest) {
+	public void setInterest(AsaasPagamentoInterestDTO interest) {
 		this.interest = interest;
 	}
 
-	public AsaasPagamentoCriarNovaCobrancaFineDTO getFine() {
+	public AsaasPagamentoFineDTO getFine() {
 		return fine;
 	}
 
-	public void setFine(AsaasPagamentoCriarNovaCobrancaFineDTO fine) {
+	public void setFine(AsaasPagamentoFineDTO fine) {
 		this.fine = fine;
 	}
 
