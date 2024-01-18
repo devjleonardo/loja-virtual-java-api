@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org/">
   <head>
     <meta charset="UTF-8">
     
@@ -26,6 +26,7 @@
           <div class="form-group col-md-6">
             <label for="nome">Nome:</label>
             <input 
+              th:value="${venda.pessoa.nome}"
               type="text" 
               class="form-control" 
               id="nome" 
@@ -37,6 +38,7 @@
           <div class="form-group col-md-6">
             <label for="email">E-mail: </label>
             <input 
+              th:value="${venda.pessoa.email}"
               type="text" 
               class="form-control" 
               id="email" 
@@ -226,10 +228,27 @@
         </div>
         
         <div class="form-row">
-          <div class="form-group col-md-12">
+          <div class="form-group col-md-6">
             <span 
               id="valor-compra" 
-              style="font-size: 19px; height: 30px; width: 100%">TOTAL R$:</span>
+              th:text="@{'TOTAL R$: ' + ${venda.valorTotal}}"
+              style="font-size: 19px; height: 30px; width: 100%"></span>
+          </div>
+          
+          <div class="form-group col-md-6">
+            <span 
+              id="valor-desconto" 
+              th:text="@{'DESCONTO R$: ' + ${venda.valorDesconto}}"
+              style="font-size: 19px; height: 30px; width: 100%"></span>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <span 
+              id="valor-frete" 
+              th:text="@{'FRETE R$: ' + ${venda.valorFrete}}"
+              style="font-size: 19px; height: 30px; width: 100%"></span>
           </div>
         </div>
       </form>

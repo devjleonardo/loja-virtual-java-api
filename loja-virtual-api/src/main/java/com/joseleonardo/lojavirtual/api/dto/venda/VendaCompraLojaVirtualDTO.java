@@ -45,6 +45,10 @@ public class VendaCompraLojaVirtualDTO implements Serializable {
 	}
 
 	public BigDecimal getValorDesconto() {
+		if (valorDesconto == null) {
+			return BigDecimal.ZERO;
+		}
+		
 		return valorDesconto;
 	}
 
