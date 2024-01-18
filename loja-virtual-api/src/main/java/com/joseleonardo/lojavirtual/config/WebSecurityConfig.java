@@ -34,7 +34,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements H
 		    .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 		    .disable()
 		    .authorizeRequests().antMatchers("/").permitAll()
-		    .antMatchers("/index").permitAll()
+		    
+		    .antMatchers(
+		        "/index", "/pagamento/**", "/resources/**", "/static/**", "/templates/**",
+		        "classpath:/resources/**", "classpath:/static/**", "classpath:/templates/**"
+		     ).permitAll()
+		    
+		    .antMatchers(
+			    HttpMethod.GET, "/pagamento/**", "/resources/**", "/static/**", "/templates/**",
+			    "classpath:/resources/**", "classpath:/static/**", "classpath:/templates/**"
+			).permitAll()
+		    
+		    .antMatchers(
+		        HttpMethod.POST, "/pagamento/**", "/resources/**", "/static/**", "/templates/**",
+		        "classpath:/resources/**", "classpath:/static/**", "classpath:/templates/**"
+		     ).permitAll()
+		    
 		    .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 			.anyRequest().authenticated()
 
@@ -63,15 +78,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements H
 		        .passwordEncoder(new BCryptPasswordEncoder());
 	}
 
-	/* Ignorando a autenticação para algumas URL */
+	/**
+	 * Configuração para permitir acesso não autenticado a recursos estáticos e
+	 * operações específicas.
+	 */
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		/* web
-		    .ignoring() 
-		    	.antMatchers(HttpMethod.GET, "/buscarAcessoPorId/**", "/buscarAcessoPorNome/**")
-		        .antMatchers(HttpMethod.POST, "/salvarAcesso")
-				.antMatchers(HttpMethod.DELETE, "/deletarAcessoPorId/**");
-	    */
+	    web.ignoring() 
+    	    .antMatchers(
+    	        HttpMethod.GET, "/buscarAcessoPorId/**", "/buscarAcessoPorNome/**", "/pagamento/**",
+    	        "/resources/**", "/static/**", "/templates/**", "classpath:/resources/**",
+    	        "classpath:/static/**", "classpath:/templates/**", "/webjars/**", 
+    	        "/WEB-INF/classes/static/**"
+    	    )
+    	    
+            .antMatchers(
+                HttpMethod.POST, "/salvarAcesso", "/buscarAcessoPorId/**", "/buscarAcessoPorNome/**", "/pagamento/**",
+    	        "/resources/**", "/static/**", "/templates/**", "classpath:/resources/**",
+    	        "classpath:/static/**", "classpath:/templates/**", "/webjars/**", 
+    	        "/WEB-INF/classes/static/**"
+             )
+            
+		    .antMatchers(HttpMethod.DELETE, "/deletarAcessoPorId/**");
+	    
 	}
 
 }
