@@ -26,6 +26,8 @@
   <body>
     <div class="container">
       <form style="padding-top: 20px; padding-bottom: 20px" id="form-checkout">
+        <input th:value="${venda.id}" type="hidden" id="idVenda">
+      
         <div class="form-row">
           <div class="form-group col-md-6">
             <label for="nome">Nome:</label>
@@ -65,7 +67,7 @@
           </div>
           
           <div class="form-group col-md-6">
-            <label for="nome-cartao">Nome como escrito no cartão:</label>
+            <label for="nome-titular-cartao">Nome como escrito no cartão:</label>
             <input 
               type="text" 
               class="form-control" 
@@ -78,11 +80,11 @@
         
         <div class="form-row" id="div-cpf">
           <div class="form-group col-md-12">
-            <label for="cpf">CPF do titular:</label>
+            <label for="cpf-titular-cartao">CPF do titular:</label>
             <input 
               type="text" 
               class="form-control" 
-              id="cpf" 
+              id="cpf-titular-cartao" 
               placeholder="000.000.000-00"
               style="height: 40px" 
               required="required">
@@ -91,8 +93,12 @@
         
         <div class="form-row" id="linha-2-cartao">
           <div class="form-group col-md-4">
-            <label for="mes-validade">Mês de validade:</label>
-            <select class="form-control" id="mes-validade" style="height: 40px" required="required">
+            <label for="mes-validade-cartao">Mês de validade:</label>
+            <select 
+              class="form-control" 
+              id="mes-validade-cartao" 
+              style="height: 40px" 
+              required="required">
                 <option value="01">01</option>
                 <option value="02">02</option>
                 <option value="03">03</option>
@@ -109,8 +115,12 @@
           </div>
           
           <div class="form-group col-md-4">
-            <label for="ano-validade">Ano de validade:</label>
-            <select class="form-control" id="ano-validade" style="height: 40px" required="required">
+            <label for="ano-validade-cartao">Ano de validade:</label>
+            <select 
+              class="form-control" 
+              id="ano-validade-cartao" 
+              style="height: 40px" 
+              required="required">
                 <option value="2024">24</option>
                 <option value="2025">25</option>
                 <option value="2026">26</option>
@@ -132,11 +142,11 @@
           </div>
           
           <div class="form-group col-md-4">
-            <label for="cvv">Código de seguranç ou CVV:</label>
+            <label for="cvv-cartao">Código de seguranç ou CVV:</label>
             <input 
               type="text" 
               class="form-control" 
-              id="cvv" 
+              id="cvv-cartao" 
               placeholder="380" 
               style="height: 40px" 
               required="required">
@@ -166,32 +176,32 @@
         
         <div class="form-row" id="div-endereco"> 
           <div class="form-group col-md-4">
-            <label for="cep">CEP de cobrança:</label>
+            <label for="cep-endereco-cobranca">CEP de cobrança:</label>
             <input 
               type="text" 
               class="form-control" 
-              id="cep" 
+              id="cep-endereco-cobranca" 
               placeholder="00000-000" 
               style="height: 40px" 
               required="required">
           </div>
           
           <div class="form-group col-md-4">
-            <label for="rua">Rua:</label>
+            <label for="rua-cobranca">Rua:</label>
             <input 
               type="text" 
               class="form-control" 
-              id="rua" 
+              id="rua-cobranca" 
               style="height: 40px" 
               required="required">
           </div>
           
           <div class="form-group col-md-4">
-            <label for="numero">Número:</label>
+            <label for="numero-endereco-cobranca">Número:</label>
             <input 
               type="text" 
               class="form-control" 
-              id="numero" 
+              id="numero-endereco-cobranca" 
               style="height: 40px" 
               required="required">
           </div>
@@ -199,22 +209,22 @@
         
         <div class="form-row" id="div-endereco2"> 
        	  <div class="form-group col-md-6">
-            <label for="estado">Estado:</label>
+            <label for="estado-endereco-cobranca">Estado:</label>
             <input 
               type="text" 
               class="form-control" 
-              id="estado" 
+              id="estado-endereco-cobranca" 
               placeholder="PR" 
               style="height: 40px" 
               required="required">
           </div>
           
           <div class="form-group col-md-6">
-            <label for="cidade">Cidade:</label>
+            <label for="cidade-endereco-cobranca">Cidade:</label>
             <input 
               type="text" 
               class="form-control" 
-              id="cidade" 
+              id="cidade-endereco-cobranca" 
               placeholder="Maringá" 
               style="height: 40px" 
               required="required">
@@ -224,6 +234,7 @@
         <div class="form-row">
           <div class="form-group col-md-12">
             <input 
+              onclick="realizarPagamento()"
               type="button" 
               class="btn btn-primary btn-lg" 
               value="Realizar Pagamento" 
@@ -337,6 +348,24 @@
 	    });
 	  });
   
+	  function realizarPagamento() {
+		  var idVenda = $('#idVenda').val();
+		  
+		  var numeroCartao = $('#numero-cartao').val();
+		  var nomeTitularCartao = $('#nome-titular-cartao').val();
+		  var cpfTitularCartao = $('#cpf-titular-cartao').val();
+		  
+		  var mesValidadeCartao = $('#mes-validade-cartao').val();
+		  var anoValidadeCartao = $('#ano-validade-cartao').val();
+		  var cvvCartao = $('#cvv-cartao').val();
+		  var quantidadeParcela = $('#quantidade-parcela').val();
+		  
+		  var cepEnderecoCobranca = $('#cep-endereco-cobranca').val();
+		  var ruaEnderecoCobranca = $('#rua-endereco-cobranca').val();
+		  var numeroEnderecoCobranca = $('#numero-endereco-cobranca').val();
+		  var estadoEnderecoCobranca = $('#estado-endereco-cobranca').val();
+		  var cidadeEnderecoCobranca = $('#cidade-endereco-cobranca').val();
+	  }
     </script>
   </body>
 </html>
