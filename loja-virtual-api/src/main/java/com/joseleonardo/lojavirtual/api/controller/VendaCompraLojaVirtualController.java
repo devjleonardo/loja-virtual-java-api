@@ -247,29 +247,8 @@ public class VendaCompraLojaVirtualController {
 	@GetMapping(value = "**/buscarVendaCompraLojaVirtualPorId/{id}")
 	public ResponseEntity<VendaCompraLojaVirtualDTO> buscarVendaCompraLojaVirtualPorId(
 			@PathVariable("id") Long id) throws LojaVirtualException {
-		VendaCompraLojaVirtual vendaCompraLojaVirtual = vendaCompraLojaVirtualRepository
-		        .buscarVendaCompraLojaVirtualPorIdSemExclusao(id).orElse(null);
-		
-		if (vendaCompraLojaVirtual == null) {
-			throw new LojaVirtualException("Não econtrou nenhuma venda com o código: " + id);
-		}
-
-		VendaCompraLojaVirtualDTO vendaCompraLojaVirtualDTO = new VendaCompraLojaVirtualDTO();
-		vendaCompraLojaVirtualDTO.setId(vendaCompraLojaVirtual.getId());
-		vendaCompraLojaVirtualDTO.setValorTotal(vendaCompraLojaVirtual.getValorTotal());
-		vendaCompraLojaVirtualDTO.setValorDesconto(vendaCompraLojaVirtual.getValorDesconto());
-		vendaCompraLojaVirtualDTO.setValorFrete(vendaCompraLojaVirtual.getValorFrete());
-		vendaCompraLojaVirtualDTO.setPessoa(vendaCompraLojaVirtual.getPessoa());
-		vendaCompraLojaVirtualDTO.setEnderecoEntrega(vendaCompraLojaVirtual.getEnderecoEntrega());
-		vendaCompraLojaVirtualDTO.setEnderecoCobranca(vendaCompraLojaVirtual.getEnderecoCobranca());
-		
-		for (ItemVendaLoja itemVendaLoja : vendaCompraLojaVirtual.getItensVendaLoja()) {
-			ItemVendaLojaDTO itemVendaLojaDTO = new ItemVendaLojaDTO();
-			itemVendaLojaDTO.setQuantidade(itemVendaLoja.getQuantidade());
-			itemVendaLojaDTO.setProduto(itemVendaLoja.getProduto());
-			
-			vendaCompraLojaVirtualDTO.getItensVendaLojaDTO().add(itemVendaLojaDTO);
-		}
+		VendaCompraLojaVirtualDTO vendaCompraLojaVirtualDTO = 
+				vendaCompraLojaVirtualService.buscarVendaCompraPorId(id);
 		
 		return new ResponseEntity<VendaCompraLojaVirtualDTO>(vendaCompraLojaVirtualDTO, HttpStatus.OK);
 	}
